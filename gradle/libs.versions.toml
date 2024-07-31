@@ -14,7 +14,10 @@ constraintlayout = "1.0.1"
 fragmentKtx = "1.8.2"
 biometric = "1.2.0-alpha05"
 koinBom = "3.5.3"
-
+dataStore = "1.1.1"
+kotlinx-serialization-json = "1.7.1"
+security-crypto = "1.1.0-alpha06"
+tink-android = "1.8.0"
 
 
 [libraries]
@@ -40,6 +43,11 @@ biometric = { group = "androidx.biometric", name = "biometric", version.ref = "b
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinBom" }
 koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinBom" }
+dataStore = { group = "androidx.datastore", name = "datastore-core", version.ref = "dataStore" }
+dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+tink-android = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink-android" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -47,5 +55,8 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 android-library = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
+[bundles]
+
+dataStore = ["dataStore", "dataStore-preferences", "kotlinx-serialization-json", "tink-android"]
 
 

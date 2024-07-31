@@ -24,23 +24,18 @@ abstract class BaseViewModel<STATE : UiViewState, INTENT : UiIntent, ACTION : Ui
 
     protected abstract fun onIntent(intent: INTENT)
 
-    fun sendAction(action: ACTION) {
+    protected fun sendAction(action: ACTION) {
         viewModelScope.launch {
             _actions.emit(action)
         }
     }
 
-    fun publishViewState(newState: STATE) {
+    protected fun publishViewState(newState: STATE) {
         _state.value = newState
     }
 
 }
 
-// MVI Intent, Use for passing user event to ViewModel
 interface UiIntent
-
-// MVI ViewState
 interface UiViewState
-
-// MVI Action (or side effect), Use for fire one time events from ViewModel to View
 interface UiAction
