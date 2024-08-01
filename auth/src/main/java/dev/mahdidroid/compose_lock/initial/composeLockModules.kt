@@ -1,12 +1,12 @@
 package dev.mahdidroid.compose_lock.initial
 
 import android.content.Context
-import dev.mahdidroid.compose_lock.ui.pin.PinViewModel
 import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferences
 import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferencesImpl
 import dev.mahdidroid.compose_lock.datastore.SecureDataStore
-import dev.mahdidroid.compose_lock.utils.AuthViewModel
-import dev.mahdidroid.compose_lock.utils.AuthenticationStateManager
+import dev.mahdidroid.compose_lock.ui.pin.PinViewModel
+import dev.mahdidroid.compose_lock.utils.AuthStateManager
+import dev.mahdidroid.compose_lock.utils.LockViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -22,11 +22,9 @@ internal fun composeLockModules(
             context, preferencesDataStoreName, keysetName, keysetPrefName, masterKeyUri
         )
     }
-    single { AuthenticationStateManager() }
-
-    viewModel { AuthViewModel(get()) }
-
+    single { AuthStateManager() }
     single<ComposeLockPreferences> { ComposeLockPreferencesImpl(get()) }
+    single { LockViewModel(get()) }
 
     viewModel { PinViewModel(get(), get()) }
 }

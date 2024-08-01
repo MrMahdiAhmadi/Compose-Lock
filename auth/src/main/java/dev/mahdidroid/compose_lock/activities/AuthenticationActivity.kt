@@ -3,52 +3,58 @@ package dev.mahdidroid.compose_lock.activities
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.biometric.BiometricPrompt
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import dev.mahdidroid.compose_lock.ui.pin.PinEntryScreen
-import dev.mahdidroid.compose_lock.utils.AuthScreen
-import dev.mahdidroid.compose_lock.utils.AuthViewModel
+import dev.mahdidroid.compose_lock.ui.ApplyTheme
+import dev.mahdidroid.compose_lock.utils.AuthState
+import dev.mahdidroid.compose_lock.utils.LockViewModel
 import org.koin.android.ext.android.inject
 import java.util.concurrent.Executor
 
-class ComposeAuthActivity : FragmentActivity() {
+internal class AuthenticationActivity : FragmentActivity() {
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private val vm: AuthViewModel by inject()
+    private val vm: LockViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        biometricPrompt = createBiometricPrompt(onSuccess = {
-            vm.onAuthSuccess()
-        })
-        promptInfo = createPromptInfo()
-        showBiometricPrompt()
+        // TODO: Refactor this if statement for a cleaner and more efficient approach
+        if (vm.state.value == AuthState.Pin || vm.state.value == AuthState.Password) {
+            biometricPrompt = setupBiometricPrompt(onSuccess = {
+                vm.handleAuthSuccess()
+            })
+            promptInfo = buildPromptInfo()
+            displayBiometricPrompt()
+        }
 
         setContent {
             val state = vm.state.collectAsState()
-            when (state.value) {
-                AuthScreen.Pin -> PinEntryScreen(onFingerPrintClick = {
-                    showBiometricPrompt()
-                })
-
-                AuthScreen.Password -> {}
-                AuthScreen.ChangePin -> {}
-                AuthScreen.ChangePassword -> {}
-                AuthScreen.Main -> {
-                    finish()
-                }
+            ApplyTheme(vm) { colors ->
+                AuthenticationContent(modifier = Modifier
+                    .fillMaxSize()
+                    .background(colors.primary),
+                    state = state.value,
+                    onBiometricPrompt = {
+                        displayBiometricPrompt()
+                    },
+                    onFinishActivity = {
+                        finish()
+                    })
             }
         }
     }
 
-    private fun showBiometricPrompt() {
+    private fun displayBiometricPrompt() {
         biometricPrompt.authenticate(promptInfo)
     }
 
-    private fun createBiometricPrompt(onSuccess: () -> Unit): BiometricPrompt {
+    private fun setupBiometricPrompt(onSuccess: () -> Unit): BiometricPrompt {
         val executor: Executor = ContextCompat.getMainExecutor(this)
 
         return BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
@@ -67,7 +73,7 @@ class ComposeAuthActivity : FragmentActivity() {
         })
     }
 
-    private fun createPromptInfo(): BiometricPrompt.PromptInfo =
+    private fun buildPromptInfo(): BiometricPrompt.PromptInfo =
         BiometricPrompt.PromptInfo.Builder().setTitle("Biometric login for my app")
             .setSubtitle("Log in using your biometric credential")
             .setNegativeButtonText("Use account password").build()

@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.compose.material)
+    implementation(libs.material)
     implementation(libs.compose.constraintlayout)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.biometric)

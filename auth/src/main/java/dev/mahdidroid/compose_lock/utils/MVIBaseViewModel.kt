@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<STATE : UiViewState, INTENT : UiIntent, ACTION : UiAction> :
+abstract class MVIBaseViewModel<STATE : UiViewState, INTENT : UiIntent, ACTION : UiAction> :
     ViewModel() {
 
     protected abstract val initialState: STATE

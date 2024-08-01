@@ -18,6 +18,7 @@ dataStore = "1.1.1"
 kotlinx-serialization-json = "1.7.1"
 security-crypto = "1.1.0-alpha06"
 tink-android = "1.8.0"
+compose-material = "1.5.4"
 
 
 [libraries]
@@ -47,6 +48,7 @@ dataStore = { group = "androidx.datastore", name = "datastore-core", version.ref
 dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 tink-android = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink-android" }
+compose-material = { group = "androidx.compose.material", name = "material"}
 
 
 [plugins]
