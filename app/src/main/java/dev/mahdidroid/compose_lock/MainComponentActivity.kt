@@ -26,9 +26,9 @@ class MainComponentActivity : BaseLockComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                SetLockTheme { light, dark ->
+              /*  SetLockTheme { light, dark ->
                     setLockTheme(lightTheme = light, darkTheme = dark)
-                }
+                }*/
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier

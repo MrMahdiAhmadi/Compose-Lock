@@ -97,7 +97,11 @@ internal fun PinEntryScreen(
         IconButton(modifier = Modifier.constrainAs(fingerPrintRef) {
             top.linkTo(sevenRef.bottom, 16.dp)
             start.linkTo(oneRef.start)
-        }, theme = theme.iconButtonTheme, onClick = { onFingerPrintClick() }, onLongClick = {})
+        },
+            theme = theme.iconButtonTheme,
+            icon = theme.iconButtonTheme.displayFingerprintIcon,
+            onClick = { onFingerPrintClick() },
+            onLongClick = {})
         NumberButton(modifier = Modifier.constrainAs(zeroRef) {
             top.linkTo(fingerPrintRef.top)
             start.linkTo(fingerPrintRef.end)
@@ -107,6 +111,7 @@ internal fun PinEntryScreen(
             start.linkTo(zeroRef.end)
         },
             theme = theme.iconButtonTheme,
+            icon = theme.iconButtonTheme.removeNumberIcon,
             onClick = { pin = pin.dropLast(1) },
             onLongClick = { pin = "" })
     }

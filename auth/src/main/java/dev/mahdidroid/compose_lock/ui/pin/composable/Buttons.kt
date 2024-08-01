@@ -56,6 +56,7 @@ data class IconButtonTheme(
 @Composable
 internal fun IconButton(
     modifier: Modifier = Modifier,
+    icon:Int,
     theme: IconButtonTheme,
     onLongClick: () -> Unit,
     onClick: () -> Unit
@@ -70,7 +71,7 @@ internal fun IconButton(
             .padding(16.dp)
     ) {
         Icon(
-            painter = painterResource(id = theme.removeNumberIcon),
+            painter = painterResource(id = icon),
             contentDescription = "",
             tint = theme.iconColor
         )
