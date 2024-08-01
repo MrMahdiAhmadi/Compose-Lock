@@ -2,9 +2,10 @@ package dev.mahdidroid.compose_lock.activities
 
 import android.content.Intent
 import androidx.activity.ComponentActivity
+import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.utils.AuthState
+import dev.mahdidroid.compose_lock.utils.LockIntent
 import dev.mahdidroid.compose_lock.utils.LockViewModel
-import dev.mahdidroid.compose_lock.utils.ThemeConfiguration
 import org.koin.android.ext.android.inject
 
 
@@ -21,8 +22,13 @@ abstract class BaseLockComponentActivity : ComponentActivity() {
 
     override fun onStop() {
         super.onStop()
-        vm.switchScreen(AuthState.ChangePin)
+        // todo don't call this when theme change
+        vm.sendIntent(LockIntent.OnSwitchScreen(AuthState.Pin))
     }
 
-    fun applyTheme(themeConfiguration: ThemeConfiguration) = vm.setTheme(themeConfiguration)
+    fun setLockTheme(singleTheme: LockTheme) =
+        vm.sendIntent(LockIntent.OnSingleTheme(theme = singleTheme))
+
+    fun setLockTheme(lightTheme: LockTheme, darkTheme: LockTheme) =
+        vm.sendIntent(LockIntent.OnTwoTheme(lightTheme = lightTheme, darkTheme = darkTheme))
 }

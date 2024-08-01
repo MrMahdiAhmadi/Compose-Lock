@@ -3,14 +3,14 @@ package dev.mahdidroid.compose_lock.activities
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.biometric.BiometricPrompt
-import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import dev.mahdidroid.compose_lock.ui.ApplyTheme
 import dev.mahdidroid.compose_lock.utils.AuthState
+import dev.mahdidroid.compose_lock.utils.LockIntent
 import dev.mahdidroid.compose_lock.utils.LockViewModel
 import org.koin.android.ext.android.inject
 import java.util.concurrent.Executor
@@ -24,28 +24,29 @@ internal class AuthenticationActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO: Refactor this if statement for a cleaner and more efficient approach
-        if (vm.state.value == AuthState.Pin || vm.state.value == AuthState.Password) {
-            biometricPrompt = setupBiometricPrompt(onSuccess = {
-                vm.handleAuthSuccess()
-            })
-            promptInfo = buildPromptInfo()
-            displayBiometricPrompt()
-        }
+        biometricPrompt = setupBiometricPrompt(onSuccess = {
+            vm.sendIntent(LockIntent.OnHandleAuthSuccess)
+        })
+        promptInfo = buildPromptInfo()
 
         setContent {
             val state = vm.state.collectAsState()
-            ApplyTheme(vm) { colors ->
-                AuthenticationContent(modifier = Modifier
-                    .fillMaxSize()
-                    .background(colors.primary),
-                    state = state.value,
-                    onBiometricPrompt = {
-                        displayBiometricPrompt()
-                    },
-                    onFinishActivity = {
-                        finish()
-                    })
+            val currentTheme =
+                if (vm.viewState.value.isSingleTheme) vm.viewState.value.lightTheme else {
+                    if (isSystemInDarkTheme()) vm.viewState.value.darkTheme else vm.viewState.value.lightTheme
+                }
+            AuthenticationContent(modifier = Modifier.fillMaxSize(),
+                state = state.value,
+                theme = currentTheme,
+                onBiometricPrompt = {
+                    displayBiometricPrompt()
+                },
+                onFinishActivity = {
+                    finish()
+                })
+            // TODO: Refactor this if statement for a cleaner and more efficient approach
+            if (state.value == AuthState.Pin || state.value == AuthState.Password) {
+                displayBiometricPrompt()
             }
         }
     }

@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 internal class AuthStateManager {
-    private val _currentState = MutableStateFlow<AuthState>(AuthState.Pin)
+    private val _currentState = MutableStateFlow<AuthState>(AuthState.ChangePin)
     val currentState: StateFlow<AuthState> = _currentState.asStateFlow()
 
     fun updateScreen(value: AuthState) {

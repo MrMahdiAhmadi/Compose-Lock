@@ -1,5 +1,8 @@
+/*
 package dev.mahdidroid.compose_lock.ui.set_pin
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -102,13 +105,22 @@ internal fun SetPinScreen(
                 start.linkTo(eightRef.end)
             })
 
-        /* IconButton(icon = R.drawable.baseline_fingerprint_24,
-             onClick = { onFingerPrintClick() },
-             onLongClick = {},
-             modifier = Modifier.constrainAs(fingerPrintRef) {
-                 top.linkTo(sevenRef.bottom, 16.dp)
-                 start.linkTo(oneRef.start)
-             })*/
+        Box(modifier = Modifier
+            .constrainAs(fingerPrintRef) {
+                top.linkTo(sevenRef.bottom, 16.dp)
+                start.linkTo(oneRef.start)
+            }
+            .size(54.dp))
+
+        */
+/*   IconButton(icon = R.drawable.baseline_fingerprint_24,
+               onClick = { },
+               onLongClick = {},
+               modifier = Modifier.constrainAs(fingerPrintRef) {
+                   top.linkTo(sevenRef.bottom, 16.dp)
+                   start.linkTo(oneRef.start)
+               })*//*
+
 
         NumberButton(number = "0",
             onClick = { pin += "0" },
@@ -125,4 +137,4 @@ internal fun SetPinScreen(
                 start.linkTo(zeroRef.end)
             })
     }
-}
+}*/

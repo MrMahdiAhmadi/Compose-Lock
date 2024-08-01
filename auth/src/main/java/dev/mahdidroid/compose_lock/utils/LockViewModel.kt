@@ -1,31 +1,62 @@
 package dev.mahdidroid.compose_lock.utils
 
-import androidx.compose.material.lightColors
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import dev.mahdidroid.compose_lock.theme.LockTheme
+import dev.mahdidroid.compose_lock.theme.darkThemePinEntryData
+import dev.mahdidroid.compose_lock.theme.lightThemePinEntryData
 
-internal class LockViewModel(private val authManager: AuthStateManager) : ViewModel() {
+internal class LockViewModel(private val authManager: AuthStateManager) :
+    MVIBaseViewModel<LockViewState, LockIntent, LockAction>() {
 
     val state = authManager.currentState
-    private val _theme =
-        MutableStateFlow<ThemeConfiguration>(ThemeConfiguration.Material2Config(lightColors()))
-    val theme: StateFlow<ThemeConfiguration> = _theme.asStateFlow()
 
-    fun handleAuthSuccess() {
-        authManager.updateScreen(AuthState.Main)
-    }
+    override val initialState: LockViewState
+        get() = LockViewState()
 
-    fun switchScreen(value: AuthState) {
-        authManager.updateScreen(value)
-    }
+    override fun onIntent(intent: LockIntent) {
+        when (intent) {
+            is LockIntent.OnTwoTheme -> {
+                publishViewState(
+                    viewState.value.copy(
+                        lightTheme = intent.lightTheme, darkTheme = intent.darkTheme
+                    )
+                )
+            }
 
-    fun setTheme(themeConfiguration: ThemeConfiguration) {
-        viewModelScope.launch {
-            _theme.emit(themeConfiguration)
+            is LockIntent.OnSingleTheme -> {
+                publishViewState(
+                    viewState.value.copy(
+                        lightTheme = intent.theme, isSingleTheme = true
+                    )
+                )
+            }
+
+            LockIntent.OnHandleAuthSuccess -> authManager.updateScreen(AuthState.Main)
+
+            is LockIntent.OnSwitchScreen -> authManager.updateScreen(intent.value)
+
         }
     }
 }
+
+internal data class LockViewState(
+    val isSingleTheme: Boolean = false,
+    val lightTheme: LockTheme = LockTheme(pinTheme = lightThemePinEntryData),
+    val darkTheme: LockTheme = LockTheme(
+        pinTheme = darkThemePinEntryData
+    )
+) : UiViewState
+
+internal sealed class LockIntent : UiIntent {
+    data class OnTwoTheme(
+        val lightTheme: LockTheme, val darkTheme: LockTheme
+    ) : LockIntent()
+
+    data class OnSingleTheme(
+        val theme: LockTheme
+    ) : LockIntent()
+
+    data class OnSwitchScreen(val value: AuthState) : LockIntent()
+    data object OnHandleAuthSuccess : LockIntent()
+}
+
+internal sealed class LockAction : UiAction

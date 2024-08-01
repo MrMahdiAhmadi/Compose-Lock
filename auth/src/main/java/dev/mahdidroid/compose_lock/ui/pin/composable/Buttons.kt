@@ -1,6 +1,7 @@
 package dev.mahdidroid.compose_lock.ui.pin.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,10 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.mahdidroid.compose_lock.auth.R
+
+data class NumberButtonTheme(
+    val buttonColor: Color,
+    val textColor: Color,
+)
 
 @Composable
 internal fun NumberButton(
-    modifier: Modifier = Modifier, number: String, onClick: () -> Unit
+    modifier: Modifier = Modifier, number: String, theme: NumberButtonTheme, onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
@@ -31,27 +38,41 @@ internal fun NumberButton(
         shape = CircleShape,
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White.copy(alpha = 0.3f)
+            containerColor = theme.buttonColor
         )
     ) {
-        Text(text = number, fontSize = 24.sp, color = Color.Black)
+        Text(text = number, fontSize = 24.sp, color = theme.textColor)
     }
 }
+
+data class IconButtonTheme(
+    val removeNumberIcon: Int = R.drawable.baseline_backspace_24,
+    val displayFingerprintIcon: Int = R.drawable.baseline_fingerprint_24,
+    val iconColor: Color,
+    val backgroundColor: Color
+)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun IconButton(
-    modifier: Modifier = Modifier, icon: Int, onClick: () -> Unit, onLongClick: () -> Unit
+    modifier: Modifier = Modifier,
+    theme: IconButtonTheme,
+    onLongClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
             .padding(horizontal = 16.dp)
             .clip(CircleShape)
             .size(54.dp)
-            //.background(Color.White.copy(alpha = 0.3f))
+            .background(theme.backgroundColor)
             .combinedClickable(onLongClick = { onLongClick() }, onClick = onClick)
             .padding(16.dp)
     ) {
-        Icon(painter = painterResource(id = icon), contentDescription = "", tint = Color.Black)
+        Icon(
+            painter = painterResource(id = theme.removeNumberIcon),
+            contentDescription = "",
+            tint = theme.iconColor
+        )
     }
 }
