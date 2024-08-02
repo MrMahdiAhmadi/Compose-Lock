@@ -23,7 +23,7 @@ abstract class BaseLockFragmentActivity : FragmentActivity() {
     override fun onStop() {
         super.onStop()
         // todo don't call this when theme change
-        vm.sendIntent(LockIntent.OnSwitchScreen(AuthState.Pin))
+        vm.sendIntent(LockIntent.OnSwitchScreen(AuthState.ChangePin))
     }
 
     fun setLockTheme(singleTheme: LockTheme) =
