@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import dev.mahdidroid.compose_lock.utils.AuthState
+import dev.mahdidroid.compose_lock.utils.BiometricMessages
 import dev.mahdidroid.compose_lock.utils.LockIntent
 import dev.mahdidroid.compose_lock.utils.LockViewModel
 import org.koin.android.ext.android.inject
@@ -27,7 +28,7 @@ internal class AuthenticationActivity : FragmentActivity() {
         biometricPrompt = setupBiometricPrompt(onSuccess = {
             vm.sendIntent(LockIntent.OnHandleAuthSuccess)
         })
-        promptInfo = buildPromptInfo()
+        promptInfo = buildPromptInfo(vm.viewState.value.messages.biometricMessages)
 
         setContent {
             val state = vm.state.collectAsState()
@@ -38,6 +39,7 @@ internal class AuthenticationActivity : FragmentActivity() {
             AuthenticationContent(modifier = Modifier.fillMaxSize(),
                 state = state.value,
                 theme = currentTheme,
+                pinTitleMessage = vm.viewState.value.messages.pinTitleMessage,
                 onBiometricPrompt = {
                     displayBiometricPrompt()
                 },
@@ -46,7 +48,7 @@ internal class AuthenticationActivity : FragmentActivity() {
                 })
             // TODO: Refactor this if statement for a cleaner and more efficient approach
             if (state.value == AuthState.Pin || state.value == AuthState.Password) {
-                displayBiometricPrompt()
+                // displayBiometricPrompt()
             }
         }
     }
@@ -74,8 +76,7 @@ internal class AuthenticationActivity : FragmentActivity() {
         })
     }
 
-    private fun buildPromptInfo(): BiometricPrompt.PromptInfo =
-        BiometricPrompt.PromptInfo.Builder().setTitle("Biometric login for my app")
-            .setSubtitle("Log in using your biometric credential")
-            .setNegativeButtonText("Use account password").build()
+    private fun buildPromptInfo(messages: BiometricMessages): BiometricPrompt.PromptInfo =
+        BiometricPrompt.PromptInfo.Builder().setTitle(messages.title).setSubtitle(messages.subtitle)
+            .setNegativeButtonText(messages.negativeButtonText).build()
 }

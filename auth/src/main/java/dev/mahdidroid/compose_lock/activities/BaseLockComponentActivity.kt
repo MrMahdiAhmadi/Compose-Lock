@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.LockIntent
+import dev.mahdidroid.compose_lock.utils.LockMessages
 import dev.mahdidroid.compose_lock.utils.LockViewModel
 import org.koin.android.ext.android.inject
 
@@ -31,4 +32,8 @@ abstract class BaseLockComponentActivity : ComponentActivity() {
 
     fun setLockTheme(lightTheme: LockTheme, darkTheme: LockTheme) =
         vm.sendIntent(LockIntent.OnTwoTheme(lightTheme = lightTheme, darkTheme = darkTheme))
+
+    fun setLockMessages(lockMessages: LockMessages) {
+        vm.sendIntent(LockIntent.OnLockMessagesChange(lockMessages))
+    }
 }

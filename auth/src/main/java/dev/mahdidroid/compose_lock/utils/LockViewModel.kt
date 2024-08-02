@@ -33,7 +33,7 @@ internal class LockViewModel(private val authManager: AuthStateManager) :
             LockIntent.OnHandleAuthSuccess -> authManager.updateScreen(AuthState.Main)
 
             is LockIntent.OnSwitchScreen -> authManager.updateScreen(intent.value)
-
+            is LockIntent.OnLockMessagesChange -> publishViewState(viewState.value.copy(messages = intent.messages))
         }
     }
 }
@@ -43,7 +43,8 @@ internal data class LockViewState(
     val lightTheme: LockTheme = LockTheme(pinTheme = lightThemePinEntryData),
     val darkTheme: LockTheme = LockTheme(
         pinTheme = darkThemePinEntryData
-    )
+    ),
+    val messages: LockMessages = LockMessages()
 ) : UiViewState
 
 internal sealed class LockIntent : UiIntent {
@@ -57,6 +58,7 @@ internal sealed class LockIntent : UiIntent {
 
     data class OnSwitchScreen(val value: AuthState) : LockIntent()
     data object OnHandleAuthSuccess : LockIntent()
+    data class OnLockMessagesChange(val messages: LockMessages) : LockIntent()
 }
 
 internal sealed class LockAction : UiAction

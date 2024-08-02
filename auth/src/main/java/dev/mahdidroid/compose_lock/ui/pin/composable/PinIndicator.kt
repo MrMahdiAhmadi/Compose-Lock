@@ -13,19 +13,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 data class PinIndicatorTheme(
-    val filled: Boolean, val filledColor: Color, val unfilledColor: Color, val borderColor: Color
+    val filledColor: Color,
+    val unfilledColor: Color,
+    val borderColor: Color,
+    val errorColor: Color,
+    val errorBoarderColor: Color
 )
 
 @Composable
-private fun PinIndicator(
-    theme: PinIndicatorTheme
+fun PinIndicator(
+    modifier: Modifier = Modifier, isFilled: Boolean, theme: PinIndicatorTheme
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(5.dp)
             .size(15.dp)
             .clip(CircleShape)
-            .background(if (theme.filled) theme.filledColor else theme.unfilledColor)
+            .background(if (isFilled) theme.filledColor else theme.unfilledColor)
             .border(2.dp, theme.borderColor, CircleShape)
     )
 }

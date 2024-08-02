@@ -11,11 +11,13 @@ internal fun AuthenticationContent(
     modifier: Modifier = Modifier,
     state: AuthState,
     theme: LockTheme,
+    pinTitleMessage: String,
     onBiometricPrompt: () -> Unit,
     onFinishActivity: () -> Unit
 ) {
     when (state) {
         AuthState.Pin -> PinEntryScreen(modifier = modifier,
+            title = pinTitleMessage,
             theme = theme.pinTheme,
             onFingerPrintClick = {
                 onBiometricPrompt()

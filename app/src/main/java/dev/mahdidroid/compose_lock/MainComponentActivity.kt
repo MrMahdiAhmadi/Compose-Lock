@@ -19,6 +19,8 @@ import dev.mahdidroid.compose_lock.ui.pin.composable.IconButtonTheme
 import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButtonTheme
 import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicatorTheme
 import dev.mahdidroid.compose_lock.ui.theme.MyApplicationTheme
+import dev.mahdidroid.compose_lock.utils.BiometricMessages
+import dev.mahdidroid.compose_lock.utils.LockMessages
 
 class MainComponentActivity : BaseLockComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,9 +28,18 @@ class MainComponentActivity : BaseLockComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-              /*  SetLockTheme { light, dark ->
-                    setLockTheme(lightTheme = light, darkTheme = dark)
-                }*/
+                /*  SetLockTheme { light, dark ->
+                      setLockTheme(lightTheme = light, darkTheme = dark)
+                  }*/
+                setLockMessages(
+                    lockMessages = LockMessages(
+                        pinTitleMessage = "test change pin", biometricMessages = BiometricMessages(
+                            title = "sdgsdfgdfgdfsgdfg",
+                            subtitle = "1111111111111",
+                            negativeButtonText = "test neg"
+                        )
+                    )
+                )
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -48,36 +59,39 @@ fun SetLockTheme(onThemeSet: (LockTheme, LockTheme) -> Unit) {
     onThemeSet(
         LockTheme(
             pinTheme = PinEntryData(
-                backgroundColor = Color.White,
-                titleColor = Color.Black,
+                backgroundColor = Color(0xFFFAFAFA),
+                titleColor = Color(0xFF333333),
                 pinIndicatorTheme = PinIndicatorTheme(
-                    filled = false,
-                    filledColor = Color.Black,
-                    unfilledColor = Color.LightGray,
-                    borderColor = Color.DarkGray
+                    filledColor = Color(0xFF00796B),
+                    unfilledColor = Color(0xFFB2DFDB),
+                    borderColor = Color(0xFF004D40),
+                    errorColor = Color(0xFFE57373),
+                    errorBoarderColor = Color(0xFFC62828)
                 ),
                 numberButtonTheme = NumberButtonTheme(
-                    buttonColor = Color.LightGray, textColor = Color.Black
+                    buttonColor = Color(0xFFE0F2F1), textColor = Color(0xFF00796B)
                 ),
                 iconButtonTheme = IconButtonTheme(
-                    iconColor = Color.Black, backgroundColor = Color.LightGray.copy(alpha = 0.7f)
+                    iconColor = Color(0xFF004D40), backgroundColor = Color.Transparent
                 )
             )
         ), LockTheme(
             pinTheme = PinEntryData(
-                backgroundColor = Color.Black,
-                titleColor = Color.White,
+                backgroundColor = Color(0xFF212121),
+                titleColor = Color(0xFFE0E0E0),
                 pinIndicatorTheme = PinIndicatorTheme(
-                    filled = false,
-                    filledColor = Color.White,
-                    unfilledColor = Color.DarkGray,
-                    borderColor = Color.LightGray
+                    filledColor = Color(0xFF64FFDA),
+                    unfilledColor = Color(0xFF004D40),
+                    borderColor = Color(0xFF80CBC4),
+                    errorColor = Color(0xFFFF5252),
+                    errorBoarderColor = Color(0xFFD50000)
                 ),
                 numberButtonTheme = NumberButtonTheme(
-                    buttonColor = Color.DarkGray, textColor = Color.White
+                    buttonColor = Color(0xFF37474F), textColor = Color(0xFF80CBC4)
                 ),
                 iconButtonTheme = IconButtonTheme(
-                    iconColor = Color.White, backgroundColor = Color.DarkGray.copy(alpha = 0.7f)
+                    iconColor = Color(0xFF80CBC4),
+                    backgroundColor = Color(0xFF004D40).copy(alpha = 0.6f)
                 )
             )
         )
