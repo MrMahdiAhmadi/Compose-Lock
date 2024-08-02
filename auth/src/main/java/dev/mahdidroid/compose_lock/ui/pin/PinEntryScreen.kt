@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -24,6 +25,7 @@ import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButton
 import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButtonTheme
 import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicator
 import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicatorTheme
+import dev.mahdidroid.compose_lock.utils.vibratePhone
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,6 +48,7 @@ internal fun PinEntryScreen(
     val animOffset = remember { Animatable(0f) }
     val animColor = remember { Animatable(theme.pinIndicatorTheme.filledColor) }
     val animBorderColor = remember { Animatable(theme.pinIndicatorTheme.borderColor) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         vm.actions.collect { action ->
@@ -60,6 +63,8 @@ internal fun PinEntryScreen(
                         targetValue = theme.pinIndicatorTheme.errorBoarderColor,
                         animationSpec = tween(durationMillis = 100)
                     )
+
+                    vibratePhone(context)
 
                     animOffset.animateTo(
                         targetValue = 0f,
