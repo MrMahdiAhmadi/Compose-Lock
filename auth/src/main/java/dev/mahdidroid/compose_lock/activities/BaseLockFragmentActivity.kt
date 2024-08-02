@@ -1,6 +1,7 @@
 package dev.mahdidroid.compose_lock.activities
 
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.fragment.app.FragmentActivity
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.utils.AuthState
@@ -14,7 +15,6 @@ abstract class BaseLockFragmentActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-
         if (vm.state.value != AuthState.Main) {
             startActivity(Intent(this, AuthenticationActivity::class.java))
         }
@@ -22,8 +22,7 @@ abstract class BaseLockFragmentActivity : FragmentActivity() {
 
     override fun onStop() {
         super.onStop()
-        // todo don't call this when theme change
-        vm.sendIntent(LockIntent.OnSwitchScreen(AuthState.ChangePin))
+        vm.sendIntent(LockIntent.OnSwitchScreen(AuthState.Pin))
     }
 
     fun setLockTheme(singleTheme: LockTheme) =
@@ -34,5 +33,9 @@ abstract class BaseLockFragmentActivity : FragmentActivity() {
 
     fun setLockMessages(lockMessages: LockMessages) {
         vm.sendIntent(LockIntent.OnLockMessagesChange(lockMessages))
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
     }
 }
