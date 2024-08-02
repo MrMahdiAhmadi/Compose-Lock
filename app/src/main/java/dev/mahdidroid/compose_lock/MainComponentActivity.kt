@@ -6,18 +6,21 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import dev.mahdidroid.compose_lock.activities.BaseLockComponentActivity
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.ui.pin.PinEntryData
 import dev.mahdidroid.compose_lock.ui.pin.composable.IconButtonTheme
 import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButtonTheme
 import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicatorTheme
+import dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin.NewPinConfirm
 import dev.mahdidroid.compose_lock.ui.theme.MyApplicationTheme
 import dev.mahdidroid.compose_lock.utils.BiometricMessages
 import dev.mahdidroid.compose_lock.utils.LockMessages
@@ -73,6 +76,11 @@ fun SetLockTheme(onThemeSet: (LockTheme, LockTheme) -> Unit) {
                 ),
                 iconButtonTheme = IconButtonTheme(
                     iconColor = Color(0xFF004D40), backgroundColor = Color.Transparent
+                ),
+                newPinConfirm = NewPinConfirm(
+                    containerColor = Color(0xFF00796B),
+                    contentColor = Color.Black,
+                    shape = RoundedCornerShape(16.dp)
                 )
             )
         ), LockTheme(
@@ -92,6 +100,11 @@ fun SetLockTheme(onThemeSet: (LockTheme, LockTheme) -> Unit) {
                 iconButtonTheme = IconButtonTheme(
                     iconColor = Color(0xFF80CBC4),
                     backgroundColor = Color(0xFF004D40).copy(alpha = 0.6f)
+                ),
+                newPinConfirm = NewPinConfirm(
+                    containerColor = Color(0xFF80CBC4),
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(16.dp)
                 )
             )
         )

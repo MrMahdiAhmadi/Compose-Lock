@@ -40,6 +40,7 @@ internal class AuthenticationActivity : FragmentActivity() {
                 state = state.value,
                 theme = currentTheme,
                 pinTitleMessage = vm.viewState.value.messages.pinTitleMessage,
+                changePinTitleMessages = vm.viewState.value.messages.changePinTitleMessages,
                 onBiometricPrompt = {
                     displayBiometricPrompt()
                 },

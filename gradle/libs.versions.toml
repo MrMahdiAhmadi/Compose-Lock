@@ -19,6 +19,9 @@ kotlinx-serialization-json = "1.7.1"
 security-crypto = "1.1.0-alpha06"
 tink-android = "1.8.0"
 compose-material = "1.5.4"
+navigationRuntimeKtx = "2.7.7"
+compose-navigation = "2.8.0-beta06"
+compose-animation = "1.6.8"
 
 
 [libraries]
@@ -49,13 +52,16 @@ dataStore-preferences = { group = "androidx.datastore", name = "datastore-prefer
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 tink-android = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink-android" }
 compose-material = { group = "androidx.compose.material", name = "material"}
-
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
+compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-animation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]
 
