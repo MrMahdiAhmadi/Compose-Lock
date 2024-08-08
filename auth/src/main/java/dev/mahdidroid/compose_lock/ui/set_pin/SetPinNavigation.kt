@@ -26,7 +26,8 @@ fun SetPinNavigation(
     modifier: Modifier = Modifier,
     theme: PinEntryData,
     changePinTitleMessages: ChangePinTitleMessages,
-    navController: NavHostController
+    navController: NavHostController,
+    onFinishActivity: () -> Unit
 ) {
 
     NavHost(
@@ -36,28 +37,37 @@ fun SetPinNavigation(
     ) {
         composable<SetPinScreens.EnterCurrentPin>(enterTransition = { enterTransition() },
             exitTransition = { exitTransition() }) {
-            PinEntryScreen(modifier = modifier,
+            PinEntryScreen(
+                modifier = modifier,
                 theme = theme,
                 title = changePinTitleMessages.enterCurrentPinTitle,
                 isChangePassword = true,
                 onFingerPrintClick = {},
-                onNavigateToChangePassword = { navController.navigate(SetPinScreens.NewPin) })
+                onNavigateToChangePassword = { navController.navigate(SetPinScreens.NewPin) },
+                onNavigateToMainScreen = onFinishActivity
+            )
         }
         composable<SetPinScreens.NewPin>(enterTransition = { enterTransition() },
             exitTransition = { exitTransition() }) {
-            NewPinScreen(theme = theme,
+            NewPinScreen(
+                theme = theme,
                 title = changePinTitleMessages.enterNewPinTitle,
                 onNavigateToConfirmPin = { newPin ->
                     navController.navigate(SetPinScreens.ConfirmNewPin(newPin))
-                })
+                },
+                onNavigateToMainScreen = onFinishActivity
+            )
         }
         composable<SetPinScreens.ConfirmNewPin>(enterTransition = { enterTransition() },
             exitTransition = { exitTransition() }) {
-            NewPinScreen(theme = theme,
+            NewPinScreen(
+                theme = theme,
                 title = changePinTitleMessages.confirmNewPinTitle,
                 pin = it.toRoute<SetPinScreens.ConfirmNewPin>().newPin,
                 pinNotMatchTitle = changePinTitleMessages.pinNotMatchTitle,
-                onNavigateToConfirmPin = {})
+                onNavigateToConfirmPin = {},
+                onNavigateToMainScreen = onFinishActivity
+            )
         }
     }
 }

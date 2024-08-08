@@ -2,7 +2,6 @@ package dev.mahdidroid.compose_lock.activities
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.util.Log
 import androidx.activity.ComponentActivity
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.utils.AuthState
@@ -17,14 +16,14 @@ abstract class BaseLockComponentActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (vm.state.value != AuthState.Main) {
+        if (vm.viewState.value.authState != AuthState.Main) {
             startActivity(Intent(this, AuthenticationActivity::class.java))
         }
     }
 
     override fun onStop() {
         super.onStop()
-        vm.sendIntent(LockIntent.OnSwitchScreen(AuthState.Pin))
+        vm.sendIntent(LockIntent.OnUpdateScreenState(AuthState.Pin))
     }
 
     fun setLockTheme(singleTheme: LockTheme) =

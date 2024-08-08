@@ -2,7 +2,6 @@ package dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin
 
 import androidx.lifecycle.viewModelScope
 import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferences
-import dev.mahdidroid.compose_lock.utils.AuthStateManager
 import dev.mahdidroid.compose_lock.utils.MVIBaseViewModel
 import dev.mahdidroid.compose_lock.utils.UiAction
 import dev.mahdidroid.compose_lock.utils.UiIntent
@@ -12,7 +11,6 @@ import kotlinx.coroutines.launch
 
 internal class NewPinViewModel(
     private val dataStore: ComposeLockPreferences,
-    private val authStateManager: AuthStateManager,
     private val newPin: String,
     private val title: String,
     private val pinNotMatchTitle: String
@@ -93,7 +91,7 @@ internal class NewPinViewModel(
                 dataStore.updatePin(viewState.value.pin)
                 dataStore.updatePinLength(viewState.value.pin.length)
                 publishViewState(viewState.value.copy(pin = ""))
-                authStateManager.navigateToMainScreen()
+                sendAction(SetPinAction.NavigateToMainScreen)
             } else {
                 publishViewState(viewState.value.copy(title = pinNotMatchTitle))
                 sendAction(SetPinAction.ShowErrorPin)
@@ -125,4 +123,5 @@ sealed class SetPinAction : UiAction {
     data object ShowErrorPin : SetPinAction()
     data object ShakePin : SetPinAction()
     data class NavigateToConfirmPin(val pin: String) : SetPinAction()
+    data object NavigateToMainScreen : SetPinAction()
 }

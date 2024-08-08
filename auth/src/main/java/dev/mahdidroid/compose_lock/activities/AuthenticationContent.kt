@@ -21,27 +21,31 @@ internal fun AuthenticationContent(
 ) {
     val navController = rememberNavController()
     when (state) {
-        AuthState.Pin -> PinEntryScreen(modifier = modifier,
+        AuthState.Pin -> PinEntryScreen(
+            modifier = modifier,
             title = pinTitleMessage,
             theme = theme.pinTheme,
             onFingerPrintClick = {
                 onBiometricPrompt()
             },
-            onNavigateToChangePassword = {})
+            onNavigateToChangePassword = {
+
+            },
+            onNavigateToMainScreen = onFinishActivity
+        )
 
         AuthState.ChangePin -> {
             SetPinNavigation(
                 modifier = modifier,
                 navController = navController,
                 changePinTitleMessages = changePinTitleMessages,
-                theme = theme.pinTheme
+                theme = theme.pinTheme,
+                onFinishActivity = onFinishActivity
             )
         }
 
         AuthState.Password -> {}
         AuthState.ChangePassword -> {}
-        AuthState.Main -> {
-            onFinishActivity()
-        }
+        AuthState.Main -> onFinishActivity()
     }
 }

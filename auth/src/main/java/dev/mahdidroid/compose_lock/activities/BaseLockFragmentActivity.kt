@@ -15,14 +15,14 @@ abstract class BaseLockFragmentActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (vm.state.value != AuthState.Main) {
+        if (vm.viewState.value.authState != AuthState.Main) {
             startActivity(Intent(this, AuthenticationActivity::class.java))
         }
     }
 
     override fun onStop() {
         super.onStop()
-        vm.sendIntent(LockIntent.OnSwitchScreen(AuthState.Pin))
+        vm.sendIntent(LockIntent.OnUpdateScreenState(AuthState.Pin))
     }
 
     fun setLockTheme(singleTheme: LockTheme) =

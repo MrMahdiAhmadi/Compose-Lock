@@ -2,7 +2,6 @@ package dev.mahdidroid.compose_lock.ui.pin
 
 import androidx.lifecycle.viewModelScope
 import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferences
-import dev.mahdidroid.compose_lock.utils.AuthStateManager
 import dev.mahdidroid.compose_lock.utils.MVIBaseViewModel
 import dev.mahdidroid.compose_lock.utils.UiAction
 import dev.mahdidroid.compose_lock.utils.UiIntent
@@ -10,9 +9,7 @@ import dev.mahdidroid.compose_lock.utils.UiViewState
 import kotlinx.coroutines.launch
 
 internal class PinViewModel(
-    private val dataStore: ComposeLockPreferences,
-    private val authStateManager: AuthStateManager,
-    private val isChangePassword: Boolean
+    private val dataStore: ComposeLockPreferences, private val isChangePassword: Boolean
 ) : MVIBaseViewModel<PinViewState, PinIntent, PinAction>() {
 
     override val initialState: PinViewState
@@ -22,7 +19,11 @@ internal class PinViewModel(
         viewModelScope.launch {
             dataStore.getPinLength().collect {
                 publishViewState(viewState.value.copy(maxLength = it))
-                if (it == 0) sendAction(PinAction.NavigateToChangePassword)
+                if (it == 0) {
+                    if (!isChangePassword) sendAction(PinAction.NavigateToChangePassword) else sendAction(
+                        PinAction.NavigateToChangePassword
+                    )
+                }
             }
         }
     }
@@ -65,7 +66,7 @@ internal class PinViewModel(
                     if (viewState.value.isChangePassword) {
                         sendAction(PinAction.NavigateToChangePassword)
                         publishViewState(viewState.value.copy(pin = "", acceptPin = true))
-                    } else authStateManager.navigateToMainScreen()
+                    } else sendAction(PinAction.NavigateToMainScreen)
                 } else sendAction(PinAction.ShowErrorPin)
             }
         }
@@ -88,4 +89,5 @@ sealed class PinIntent : UiIntent {
 sealed class PinAction : UiAction {
     data object ShowErrorPin : PinAction()
     data object NavigateToChangePassword : PinAction()
+    data object NavigateToMainScreen : PinAction()
 }

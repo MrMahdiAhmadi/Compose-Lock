@@ -1,13 +1,12 @@
 package dev.mahdidroid.compose_lock.utils
 
+import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferences
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.theme.darkThemePinEntryData
 import dev.mahdidroid.compose_lock.theme.lightThemePinEntryData
 
-internal class LockViewModel(private val authManager: AuthStateManager) :
+internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
     MVIBaseViewModel<LockViewState, LockIntent, LockAction>() {
-
-    val state = authManager.currentState
 
     override val initialState: LockViewState
         get() = LockViewState()
@@ -30,10 +29,11 @@ internal class LockViewModel(private val authManager: AuthStateManager) :
                 )
             }
 
-            LockIntent.OnHandleAuthSuccess -> authManager.updateScreen(AuthState.Main)
-
-            is LockIntent.OnSwitchScreen -> authManager.updateScreen(intent.value)
             is LockIntent.OnLockMessagesChange -> publishViewState(viewState.value.copy(messages = intent.messages))
+
+            LockIntent.OnNavigateToMainScreen -> publishViewState(viewState.value.copy(authState = AuthState.Main))
+
+            is LockIntent.OnUpdateScreenState -> publishViewState(viewState.value.copy(authState = intent.value))
         }
     }
 }
@@ -44,7 +44,8 @@ internal data class LockViewState(
     val darkTheme: LockTheme = LockTheme(
         pinTheme = darkThemePinEntryData
     ),
-    val messages: LockMessages = LockMessages()
+    val messages: LockMessages = LockMessages(),
+    val authState: AuthState = AuthState.Pin
 ) : UiViewState
 
 internal sealed class LockIntent : UiIntent {
@@ -56,9 +57,9 @@ internal sealed class LockIntent : UiIntent {
         val theme: LockTheme
     ) : LockIntent()
 
-    data class OnSwitchScreen(val value: AuthState) : LockIntent()
-    data object OnHandleAuthSuccess : LockIntent()
     data class OnLockMessagesChange(val messages: LockMessages) : LockIntent()
+    data object OnNavigateToMainScreen : LockIntent()
+    data class OnUpdateScreenState(val value: AuthState) : LockIntent()
 }
 
 internal sealed class LockAction : UiAction

@@ -6,4 +6,5 @@ internal sealed class AuthState(val name: String) {
     data object ChangePin : AuthState("changePin")
     data object ChangePassword : AuthState("changePassword")
     data object Main : AuthState("main")
+   // internal data object Loading : AuthState("loading")
 }
