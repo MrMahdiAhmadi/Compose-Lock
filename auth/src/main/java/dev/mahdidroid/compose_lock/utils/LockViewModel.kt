@@ -14,23 +14,16 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
     override val initialState: LockViewState
         get() = LockViewState()
 
-    suspend fun loadAuthState(): Boolean {
-        var returnValue = false
-        val it = dataStore.getAuthState()
-        if (viewState.value.defaultAuthState == AuthState.Loading) {
+    fun loadAuthState(onStateUpdated: () -> Unit) {
+        viewModelScope.launch {
+            val state = dataStore.getAuthState()
             publishViewState(
                 viewState.value.copy(
-                    currentAuthState = it, defaultAuthState = it
+                    currentAuthState = state, defaultAuthState = state
                 )
             )
-            if (it != AuthState.NoAuth) returnValue = true
-
-        } else publishViewState(
-            viewState.value.copy(
-                defaultAuthState = it
-            )
-        )
-        return returnValue
+            onStateUpdated()
+        }
     }
 
     override fun onIntent(intent: LockIntent) {
@@ -41,13 +34,11 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                 )
             )
 
-
             is LockIntent.OnSingleTheme -> publishViewState(
                 viewState.value.copy(
                     lightTheme = intent.theme, isSingleTheme = true
                 )
             )
-
 
             is LockIntent.OnLockMessagesChange -> publishViewState(viewState.value.copy(messages = intent.messages))
 
