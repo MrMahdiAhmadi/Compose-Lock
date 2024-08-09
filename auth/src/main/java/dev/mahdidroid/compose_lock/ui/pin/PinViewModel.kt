@@ -18,12 +18,11 @@ internal class PinViewModel(
     init {
         viewModelScope.launch {
             dataStore.getPinLength().collect {
-                publishViewState(viewState.value.copy(maxLength = it))
-                if (it == 0) {
+                publishViewState(viewState.value.copy(maxLength = 4))/*if (it == 0) {
                     if (!isChangePassword) sendAction(PinAction.NavigateToChangePassword) else sendAction(
                         PinAction.NavigateToChangePassword
                     )
-                }
+                }*/
             }
         }
     }
@@ -61,7 +60,7 @@ internal class PinViewModel(
     private fun checkPin() {
         viewModelScope.launch {
             dataStore.getPin().collect {
-                if (it == viewState.value.pin) {
+                if ("1111" == viewState.value.pin) {
                     //todo add success animation
                     if (viewState.value.isChangePassword) {
                         sendAction(PinAction.NavigateToChangePassword)

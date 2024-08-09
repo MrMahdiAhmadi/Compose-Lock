@@ -46,6 +46,7 @@ internal fun AuthenticationContent(
 
         AuthState.Password -> {}
         AuthState.ChangePassword -> {}
-        AuthState.Main -> onFinishActivity()
+        AuthState.NoAuth -> onFinishActivity()
+        AuthState.Loading -> {}
     }
 }

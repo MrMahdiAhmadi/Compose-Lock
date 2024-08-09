@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,7 +23,10 @@ import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButtonTheme
 import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicatorTheme
 import dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin.NewPinConfirm
 import dev.mahdidroid.compose_lock.ui.theme.MyApplicationTheme
+import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.BiometricMessages
+import dev.mahdidroid.compose_lock.utils.LocalAuthAction
+import dev.mahdidroid.compose_lock.utils.LockActions
 import dev.mahdidroid.compose_lock.utils.LockMessages
 
 class MainComponentActivity : BaseLockComponentActivity() {
@@ -31,25 +35,40 @@ class MainComponentActivity : BaseLockComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                /*  SetLockTheme { light, dark ->
-                      setLockTheme(lightTheme = light, darkTheme = dark)
-                  }*/
-                setLockMessages(
-                    lockMessages = LockMessages(
-                        pinTitleMessage = "test change pin", biometricMessages = BiometricMessages(
-                            title = "sdgsdfgdfgdfsgdfg",
-                            subtitle = "1111111111111",
-                            negativeButtonText = "test neg"
+                ProvideAuthAction {
+                    val auth = LocalAuthAction.current
+
+                    setLockMessages(
+                        lockMessages = LockMessages(
+                            biometricMessages = BiometricMessages(
+                                title = "sdgsdfgdfgdfsgdfg",
+                                subtitle = "1111111111111",
+                                negativeButtonText = "test neg"
+                            )
                         )
                     )
-                )
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                    ) {
-                        Text(text = "Main Screen", color = MaterialTheme.colorScheme.primary)
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                        ) {
+                            Text(text = "Main Screen", color = MaterialTheme.colorScheme.primary)
+
+                            Button(onClick = {
+                                auth.invoke(LockActions.OnOpenScreenNow(AuthState.Pin))
+                            }) {
+                                Text(text = "open pin now")
+                            }
+
+                            Button(onClick = { auth.invoke(LockActions.OnSetDefaultValue(AuthState.Pin)) }) {
+                                Text(text = "set pin as default")
+                            }
+
+                            Button(onClick = { auth.invoke(LockActions.OnSetDefaultValue(AuthState.NoAuth)) }) {
+                                Text(text = "turn off auth")
+                            }
+                        }
                     }
                 }
             }

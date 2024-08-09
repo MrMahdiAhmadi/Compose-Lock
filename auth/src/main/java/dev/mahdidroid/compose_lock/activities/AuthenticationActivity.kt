@@ -35,7 +35,7 @@ internal class AuthenticationActivity : FragmentActivity() {
                     if (isSystemInDarkTheme()) vm.viewState.value.darkTheme else vm.viewState.value.lightTheme
                 }
             AuthenticationContent(modifier = Modifier.fillMaxSize(),
-                state = vm.viewState.value.authState,
+                state = vm.viewState.value.currentAuthState,
                 theme = currentTheme,
                 pinTitleMessage = vm.viewState.value.messages.pinTitleMessage,
                 changePinTitleMessages = vm.viewState.value.messages.changePinTitleMessages,
@@ -47,7 +47,7 @@ internal class AuthenticationActivity : FragmentActivity() {
                     finish()
                 })
             // TODO: Refactor this if statement for a cleaner and more efficient approach
-            if (vm.viewState.value.authState == AuthState.Pin || vm.viewState.value.authState == AuthState.Password) {
+            if (vm.viewState.value.currentAuthState == AuthState.Pin || vm.viewState.value.currentAuthState == AuthState.Password) {
                 // displayBiometricPrompt()
             }
         }
