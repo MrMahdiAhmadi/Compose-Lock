@@ -48,12 +48,13 @@ data class PinEntryData(
 internal fun PinEntryScreen(
     modifier: Modifier = Modifier,
     isChangePassword: Boolean = false,
-    vm: PinViewModel = koinViewModel(parameters = { parametersOf(isChangePassword) }),
     isFingerPrintAvailable: Boolean = true,
     title: String,
     theme: PinEntryData,
+    vm: PinViewModel = koinViewModel(parameters = { parametersOf(isChangePassword) }),
     onFingerPrintClick: () -> Unit,
-    onNavigateToChangePassword: () -> Unit
+    onNavigateToChangePassword: () -> Unit,
+    onNavigateToMainScreen: () -> Unit
 ) {
     val animOffset = remember { Animatable(0f) }
     val animColor = remember { Animatable(theme.pinIndicatorTheme.filledColor) }
@@ -101,6 +102,8 @@ internal fun PinEntryScreen(
                 }
 
                 PinAction.NavigateToChangePassword -> onNavigateToChangePassword()
+
+                PinAction.NavigateToMainScreen -> onNavigateToMainScreen()
             }
         }
     }
@@ -247,8 +250,8 @@ internal fun PinEntryScreen(
 
 
 suspend fun shakeAnimation(animOffset: Animatable<Float, AnimationVector1D>): Unit {
-    animOffset.animateTo(targetValue = 0f,
-        animationSpec = repeatable(iterations = 2, animation = keyframes {
+    animOffset.animateTo(
+        targetValue = 0f, animationSpec = repeatable(iterations = 2, animation = keyframes {
             durationMillis = 200 // Total duration of the shake animation
             10f at 0
             -10f at 50
@@ -259,5 +262,6 @@ suspend fun shakeAnimation(animOffset: Animatable<Float, AnimationVector1D>): Un
             10f at 300
             -10f at 350
             10f at 400
-        }))
+        })
+    )
 }

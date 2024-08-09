@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.crypto.tink.Aead
@@ -15,7 +16,7 @@ import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class SecureDataStore(
+internal class SecureDataStore(
     private val context: Context,
     preferencesDataStoreName: String,
     keysetName: String,
@@ -64,6 +65,18 @@ class SecureDataStore(
             } else {
                 ""
             }
+        }
+    }
+
+    suspend fun saveIntWithoutEncryption(key: String, value: Int) {
+        context.dataStore.edit {
+            it[intPreferencesKey(key)] = value
+        }
+    }
+
+    fun intFlowWithoutEncryption(key: String): Flow<Int> {
+        return context.dataStore.data.map {
+            it[intPreferencesKey(key)] ?: 0
         }
     }
 

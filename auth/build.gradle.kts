@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.compose.material)
-   //implementation(libs.compose.animation)
+    //implementation(libs.compose.animation)
     implementation(libs.material)
     implementation(libs.compose.constraintlayout)
     implementation(libs.androidx.fragment.ktx)
@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.bundles.dataStore)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.compose.navigation)
+    implementation(libs.androidx.splash)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +69,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(libs.leakcanary.android)
 }

@@ -50,7 +50,8 @@ internal fun NewPinScreen(
         )
     }),
     theme: PinEntryData,
-    onNavigateToConfirmPin: (String) -> Unit
+    onNavigateToConfirmPin: (String) -> Unit,
+    onNavigateToMainScreen: () -> Unit
 ) {
     val animOffset = remember { Animatable(0f) }
     val animColor = remember { Animatable(theme.pinIndicatorTheme.filledColor) }
@@ -93,6 +94,7 @@ internal fun NewPinScreen(
                 is SetPinAction.NavigateToConfirmPin -> onNavigateToConfirmPin(action.pin)
 
                 SetPinAction.ShakePin -> shakeAnimation(animOffset)
+                SetPinAction.NavigateToMainScreen -> onNavigateToMainScreen()
             }
         }
     }

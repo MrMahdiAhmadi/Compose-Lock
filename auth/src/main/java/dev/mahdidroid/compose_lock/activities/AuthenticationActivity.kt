@@ -5,7 +5,6 @@ import androidx.activity.compose.setContent
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -26,18 +25,17 @@ internal class AuthenticationActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         biometricPrompt = setupBiometricPrompt(onSuccess = {
-            vm.sendIntent(LockIntent.OnHandleAuthSuccess)
+            vm.sendIntent(LockIntent.OnNavigateToMainScreen)
         })
         promptInfo = buildPromptInfo(vm.viewState.value.messages.biometricMessages)
 
         setContent {
-            val state = vm.state.collectAsState()
             val currentTheme =
                 if (vm.viewState.value.isSingleTheme) vm.viewState.value.lightTheme else {
                     if (isSystemInDarkTheme()) vm.viewState.value.darkTheme else vm.viewState.value.lightTheme
                 }
             AuthenticationContent(modifier = Modifier.fillMaxSize(),
-                state = state.value,
+                state = vm.viewState.value.currentAuthState,
                 theme = currentTheme,
                 pinTitleMessage = vm.viewState.value.messages.pinTitleMessage,
                 changePinTitleMessages = vm.viewState.value.messages.changePinTitleMessages,
@@ -45,10 +43,11 @@ internal class AuthenticationActivity : FragmentActivity() {
                     displayBiometricPrompt()
                 },
                 onFinishActivity = {
+                    vm.sendIntent(LockIntent.OnNavigateToMainScreen)
                     finish()
                 })
             // TODO: Refactor this if statement for a cleaner and more efficient approach
-            if (state.value == AuthState.Pin || state.value == AuthState.Password) {
+            if (vm.viewState.value.currentAuthState == AuthState.Pin || vm.viewState.value.currentAuthState == AuthState.Password) {
                 // displayBiometricPrompt()
             }
         }
