@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import dev.mahdidroid.compose_lock.theme.LockTheme
+import dev.mahdidroid.compose_lock.theme.ComposeLockTheme
 import dev.mahdidroid.compose_lock.utils.LockIntent
 import dev.mahdidroid.compose_lock.utils.LockMessages
 import dev.mahdidroid.compose_lock.utils.LockViewModel
@@ -17,13 +17,13 @@ abstract class BaseSplashActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        setLockTheme(getSingleTheme(), getLightTheme(), getDarkTheme())
+        setLockTheme(getComposeLockTheme())
         setLockMessages(getLockMessages())
 
         splashScreen.setKeepOnScreenCondition { true }
 
         vm.loadAuthState {
-            val destinationClass = getDestinationClass()
+            val destinationClass = getContentActivityClass()
             val intent = Intent(this@BaseSplashActivity, destinationClass)
             startActivity(intent)
             finish()
@@ -31,13 +31,16 @@ abstract class BaseSplashActivity : ComponentActivity() {
     }
 
     private fun setLockTheme(
-        singleTheme: LockTheme?, lightTheme: LockTheme?, darkTheme: LockTheme?
+        theme: ComposeLockTheme
     ) {
-        singleTheme?.let {
-            vm.sendIntent(LockIntent.OnSingleTheme(theme = it))
-        }
-        if (lightTheme != null && darkTheme != null) {
-            vm.sendIntent(LockIntent.OnTwoTheme(lightTheme = lightTheme, darkTheme = darkTheme))
+        when (theme) {
+            is ComposeLockTheme.SingleTheme -> vm.sendIntent(LockIntent.OnSingleTheme(theme = theme.theme))
+
+            is ComposeLockTheme.DayNightTheme -> vm.sendIntent(
+                LockIntent.OnTwoTheme(
+                    lightTheme = theme.lightTheme, darkTheme = theme.darkTheme
+                )
+            )
         }
     }
 
@@ -45,9 +48,7 @@ abstract class BaseSplashActivity : ComponentActivity() {
         vm.sendIntent(LockIntent.OnLockMessagesChange(lockMessages))
     }
 
-    abstract fun getSingleTheme(): LockTheme?
-    abstract fun getLightTheme(): LockTheme?
-    abstract fun getDarkTheme(): LockTheme?
+    abstract fun getComposeLockTheme(): ComposeLockTheme
     abstract fun getLockMessages(): LockMessages
-    abstract fun getDestinationClass(): Class<*>
+    abstract fun getContentActivityClass(): Class<*>
 }

@@ -2,13 +2,10 @@ package dev.mahdidroid.compose_lock.theme
 
 import dev.mahdidroid.compose_lock.ui.pin.PinEntryData
 
-/*data class TestTheme(
-    val singleTheme: LockTheme? = null, val twoTheme: TwoTheme? = null
-)
-
-data class TwoTheme(
-    val lightTheme: LockTheme, val darkTheme: LockTheme
-)*/
+sealed class ComposeLockTheme {
+    data class SingleTheme(val theme: LockTheme) : ComposeLockTheme()
+    data class DayNightTheme(val lightTheme: LockTheme, val darkTheme: LockTheme) : ComposeLockTheme()
+}
 
 data class LockTheme(
     val pinTheme: PinEntryData
