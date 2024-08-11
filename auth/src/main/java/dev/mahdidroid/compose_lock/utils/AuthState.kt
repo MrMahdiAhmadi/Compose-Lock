@@ -8,7 +8,6 @@ sealed class AuthState(val name: Int) {
     data object ChangePin : AuthState(R.string.AuthStateChangePin)
     data object ChangePassword : AuthState(R.string.AuthStateChangePassword)
     data object NoAuth : AuthState(R.string.AuthStateNoAuth)
-    internal data object Loading : AuthState(R.string.AuthStateLoading)
 }
 
 sealed class LockActions {

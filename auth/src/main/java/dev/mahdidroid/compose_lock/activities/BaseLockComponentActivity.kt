@@ -18,9 +18,11 @@ abstract class BaseLockComponentActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (vm.viewState.value.currentAuthState != AuthState.NoAuth && vm.viewState.value.currentAuthState != AuthState.Loading) {
-            startActivity(Intent(this, AuthenticationActivity::class.java))
-        }
+        if (vm.viewState.value.currentAuthState != AuthState.NoAuth) startActivity(
+            Intent(
+                this, AuthenticationActivity::class.java
+            )
+        )
     }
 
     override fun onStop() {

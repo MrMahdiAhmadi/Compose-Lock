@@ -28,7 +28,7 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
 
     override fun onIntent(intent: LockIntent) {
         when (intent) {
-            is LockIntent.OnTwoTheme -> publishViewState(
+            is LockIntent.OnDayNightTheme -> publishViewState(
                 viewState.value.copy(
                     lightTheme = intent.lightTheme, darkTheme = intent.darkTheme
                 )
@@ -42,11 +42,14 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
 
             is LockIntent.OnLockMessagesChange -> publishViewState(viewState.value.copy(messages = intent.messages))
 
-            LockIntent.OnNavigateToMainScreen -> publishViewState(
-                viewState.value.copy(
-                    currentAuthState = AuthState.NoAuth
+            is LockIntent.OnNavigateToMainScreen -> {
+                publishViewState(
+                    viewState.value.copy(
+                        currentAuthState = AuthState.NoAuth
+                    )
                 )
-            )
+                sendAction(LockAction.SendActivityResult(intent.resultCode))
+            }
 
             is LockIntent.OnUpdateScreenState -> publishViewState(
                 viewState.value.copy(
@@ -62,23 +65,12 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                 )
             }
 
-            is LockIntent.OnOpenAuthNow -> {
-                publishViewState(viewState.value.copy(currentAuthState = intent.value))
-                sendAction(LockAction.StartAuthenticationActivity)
-            }
-
             is LockIntent.OnSetDefaultAuth -> {
                 viewModelScope.launch(Dispatchers.Main) {
                     dataStore.updateAuthState(intent.value.name)
                 }
                 publishViewState(viewState.value.copy(defaultAuthState = intent.value))
             }
-
-            LockIntent.ResetShouldStartAuthActivity -> publishViewState(
-                viewState.value.copy(
-                    shouldStartAuthActivity = false
-                )
-            )
         }
     }
 }
@@ -90,13 +82,12 @@ internal data class LockViewState(
         pinTheme = darkThemePinEntryData
     ),
     val messages: LockMessages = LockMessages(),
-    val currentAuthState: AuthState = AuthState.Loading,
-    val defaultAuthState: AuthState = AuthState.Loading,
-    val shouldStartAuthActivity: Boolean = false
+    val currentAuthState: AuthState = AuthState.NoAuth,
+    val defaultAuthState: AuthState = AuthState.NoAuth
 ) : UiViewState
 
 internal sealed class LockIntent : UiIntent {
-    data class OnTwoTheme(
+    data class OnDayNightTheme(
         val lightTheme: LockTheme, val darkTheme: LockTheme
     ) : LockIntent()
 
@@ -105,14 +96,13 @@ internal sealed class LockIntent : UiIntent {
     ) : LockIntent()
 
     data class OnLockMessagesChange(val messages: LockMessages) : LockIntent()
-    data object OnNavigateToMainScreen : LockIntent()
+
+    data class OnNavigateToMainScreen(val resultCode: Int) : LockIntent()
     data class OnUpdateScreenState(val value: AuthState) : LockIntent()
     data object OnStop : LockIntent()
-    data class OnOpenAuthNow(val value: AuthState) : LockIntent()
     data class OnSetDefaultAuth(val value: AuthState) : LockIntent()
-    data object ResetShouldStartAuthActivity : LockIntent()
 }
 
 internal sealed class LockAction : UiAction {
-    data object StartAuthenticationActivity : LockAction()
+    data class SendActivityResult(val code: Int) : LockAction()
 }
