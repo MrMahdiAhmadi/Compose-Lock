@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="AuthStateNoAuth">noAuth</string>
+    <string name="AuthStatePin">pin</string>
+    <string name="AuthStatePassword">password</string>
+    <string name="AuthStateChangePin">changePin</string>
+    <string name="AuthStateChangePassword">changePassword</string>
+    <string name="AuthStateLoading">loading</string>
+</resources>

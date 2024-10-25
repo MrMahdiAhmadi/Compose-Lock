@@ -6,25 +6,48 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import dev.mahdidroid.compose_lock.activities.ComposeLockComponentActivity
+import dev.mahdidroid.compose_lock.activities.BaseLockComponentActivity
 import dev.mahdidroid.compose_lock.ui.theme.MyApplicationTheme
+import dev.mahdidroid.compose_lock.utils.AuthState
+import dev.mahdidroid.compose_lock.utils.LocalAuthAction
+import dev.mahdidroid.compose_lock.utils.LockActions
 
-class MainComponentActivity : ComposeLockComponentActivity() {
+class MainComponentActivity : BaseLockComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                    ) {
-                        Text(text = "Main Screen")
+                ProvideAuthAction {
+                    val auth = LocalAuthAction.current
+
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                        ) {
+                            Text(text = "Main Screen", color = MaterialTheme.colorScheme.primary)
+
+                            Button(onClick = {
+                                auth.invoke(LockActions.OnOpenScreenNow(AuthState.Pin))
+                            }) {
+                                Text(text = "open pin now")
+                            }
+
+                            Button(onClick = { auth.invoke(LockActions.OnSetDefaultValue(AuthState.Pin)) }) {
+                                Text(text = "set pin as default")
+                            }
+
+                            Button(onClick = { auth.invoke(LockActions.OnSetDefaultValue(AuthState.NoAuth)) }) {
+                                Text(text = "turn off auth")
+                            }
+                        }
                     }
                 }
             }

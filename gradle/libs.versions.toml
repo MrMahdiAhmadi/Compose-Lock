@@ -5,6 +5,7 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+leakcanaryAndroid = "2.14"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
 composeBom = "2024.06.00"
@@ -14,7 +15,15 @@ constraintlayout = "1.0.1"
 fragmentKtx = "1.8.2"
 biometric = "1.2.0-alpha05"
 koinBom = "3.5.3"
-
+dataStore = "1.1.1"
+kotlinx-serialization-json = "1.7.1"
+security-crypto = "1.1.0-alpha06"
+tink-android = "1.8.0"
+compose-material = "1.5.4"
+navigationRuntimeKtx = "2.7.7"
+compose-navigation = "2.8.0-beta06"
+compose-animation = "1.6.8"
+compose-splash = "1.0.1"
 
 
 [libraries]
@@ -33,6 +42,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 compose-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
@@ -40,12 +50,26 @@ biometric = { group = "androidx.biometric", name = "biometric", version.ref = "b
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinBom" }
 koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinBom" }
+dataStore = { group = "androidx.datastore", name = "datastore-core", version.ref = "dataStore" }
+dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+tink-android = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink-android" }
+compose-material = { group = "androidx.compose.material", name = "material"}
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
+compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-animation" }
+androidx-splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "compose-splash" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
+[bundles]
+
+dataStore = ["dataStore", "dataStore-preferences", "kotlinx-serialization-json", "tink-android"]
 
 
