@@ -27,26 +27,77 @@ internal data class LockViewState(
 ) : UiViewState
 
 internal sealed class LockIntent : UiIntent {
+
+    /**
+     * Represents an intent to update the day and night theme settings.
+     * - `lightTheme`: The theme to be applied during the day or light mode.
+     * - `darkTheme`: The theme to be applied during the night or dark mode.
+     */
     data class OnDayNightTheme(
         val lightTheme: LockTheme, val darkTheme: LockTheme
     ) : LockIntent()
 
+    /**
+     * Represents an intent to switch to a single theme mode.
+     * - `theme`: The theme to be used as the single (uniform) theme throughout the app.
+     */
     data class OnSingleTheme(
         val theme: LockTheme
     ) : LockIntent()
 
+    /**
+     * Represents an intent to update lock messages.
+     * - `messages`: The new set of messages to be displayed for authentication-related feedback.
+     */
     data class OnLockMessagesChange(val messages: LockMessages) : LockIntent()
 
+    /**
+     * Represents an intent to navigate to the main screen after a successful authentication.
+     * - `resultCode`: A code indicating the result of the authentication process.
+     */
     data class OnNavigateToMainScreen(val resultCode: Int) : LockIntent()
+
+    /**
+     * Represents an intent to update the screen's current authentication state.
+     * - `value`: The new authentication state to be applied (e.g., PIN, password, no authentication).
+     */
     data class OnUpdateScreenState(val value: AuthState) : LockIntent()
+
+    /**
+     * Represents an intent to handle actions that should be taken when the activity is stopped.
+     * It resets the current authentication state based on the default state.
+     */
     data object OnStop : LockIntent()
+
+    /**
+     * Represents an intent to set a new default authentication method.
+     * - `value`: The authentication state to be set as the default (e.g., PIN, password, no authentication).
+     */
     data class OnSetDefaultAuth(val value: AuthState) : LockIntent()
 
+    /**
+     * Represents an intent to update the retry policy for authentication attempts.
+     * - `composeLockRetryPolicy`: The new retry policy settings.
+     */
     data class OnRetryPolicyChange(val composeLockRetryPolicy: ComposeLockRetryPolicy) :
         LockIntent()
 
+    /**
+     * Represents an intent to handle the result of an authentication attempt.
+     * - `authResult`: The result of the authentication process (e.g., success, failure, error).
+     */
     data class OnReceiveAuthResult(val authResult: AuthResult) : LockIntent()
+
+    /**
+     * Represents an intent to navigate directly to the main screen, typically used after
+     * confirming successful authentication.
+     */
     data object NavigateToMainScreen : LockIntent()
+
+    /**
+     * Represents an intent triggered when an authentication attempt fails.
+     * It increments the failed attempt count and possibly triggers delay mechanisms based on retry policies.
+     */
     data object OnFailed : LockIntent()
 }
 

@@ -73,5 +73,10 @@ abstract class BaseSplashActivity : ComponentActivity() {
     abstract fun getComposeLockTheme(): ComposeLockTheme
     abstract fun getLockMessages(): LockMessages
     abstract fun getRetryPolicy(): ComposeLockRetryPolicy
+    /**
+     * Must be implemented by the child class to specify which Activity should be launched after
+     * successful authentication or when authentication is not required.
+     * @return The `Class` object of the Activity to be started.
+     */
     abstract fun getContentActivityClass(): Class<*>
 }

@@ -40,8 +40,8 @@ class MainComponentActivity : BaseLockComponentActivity() {
                                 Text(text = "open pin now")
                             }
 
-                            Button(onClick = { auth.invoke(LockActions.OnSetDefaultValue(AuthState.Pin)) }) {
-                                Text(text = "set pin as default")
+                            Button(onClick = { auth.invoke(LockActions.OnSetDefaultValue(AuthState.ChangePin)) }) {
+                                Text(text = "change pin")
                             }
 
                             Button(onClick = { auth.invoke(LockActions.OnSetDefaultValue(AuthState.NoAuth)) }) {
