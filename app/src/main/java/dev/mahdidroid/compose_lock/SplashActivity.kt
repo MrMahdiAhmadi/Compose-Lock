@@ -4,6 +4,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.mahdidroid.compose_lock.activities.BaseSplashActivity
+import dev.mahdidroid.compose_lock.auth.ComposeLockRetryPolicy
 import dev.mahdidroid.compose_lock.theme.ComposeLockTheme
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.ui.pin.PinEntryData
@@ -48,6 +49,8 @@ class SplashActivity : BaseSplashActivity() {
         pinTitleMessage = "test new message",
         biometricMessages = BiometricMessages(title = "skvjsklvjlksdafjvldksfjvdf")
     )
+
+    override fun getRetryPolicy(): ComposeLockRetryPolicy = ComposeLockRetryPolicy()
 
     override fun getContentActivityClass(): Class<*> = MainComponentActivity::class.java
 }

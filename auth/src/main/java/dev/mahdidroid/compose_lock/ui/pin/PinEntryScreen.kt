@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import dev.mahdidroid.compose_lock.ui.pin.composable.IconButton
@@ -30,6 +31,7 @@ import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButtonTheme
 import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicator
 import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicatorTheme
 import dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin.NewPinConfirm
+import dev.mahdidroid.compose_lock.utils.AuthResult
 import dev.mahdidroid.compose_lock.utils.vibratePhone
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -54,7 +56,7 @@ internal fun PinEntryScreen(
     vm: PinViewModel = koinViewModel(parameters = { parametersOf(isChangePassword) }),
     onFingerPrintClick: () -> Unit,
     onNavigateToChangePassword: () -> Unit,
-    onNavigateToMainScreen: () -> Unit
+    onSendResult: (AuthResult) -> Unit
 ) {
     val animOffset = remember { Animatable(0f) }
     val animColor = remember { Animatable(theme.pinIndicatorTheme.filledColor) }
@@ -85,6 +87,7 @@ internal fun PinEntryScreen(
                     vibratePhone(context)
 
                     shakeAnimation(animOffset)
+                    vm.sendIntent(PinIntent.OnResetPin)
 
                     launch {
                         animColor.animateTo(
@@ -98,18 +101,18 @@ internal fun PinEntryScreen(
                             animationSpec = tween(durationMillis = 100)
                         )
                     }
-                    vm.sendIntent(PinIntent.OnResetPin)
+                    onSendResult(AuthResult.PIN_FAILED)
                 }
 
                 PinAction.NavigateToChangePassword -> onNavigateToChangePassword()
 
-                PinAction.NavigateToMainScreen -> onNavigateToMainScreen()
+                PinAction.NavigateToMainScreen -> onSendResult(AuthResult.PIN_SUCCESS)
             }
         }
     }
 
     ConstraintLayout(modifier = modifier.background(theme.backgroundColor)) {
-        val (pinRef, pinNumbersRef, titleRef) = createRefs()
+        val (pinRef, timerRef, pinNumbersRef, titleRef) = createRefs()
         val (oneRef, twoRef, threeRef, fourRef, fiveRef, sixRef, sevenRef, eightRef, nineRef, zeroRef, removeRef, fingerPrintRef) = createRefs()
         createHorizontalChain(oneRef, twoRef, threeRef, chainStyle = ChainStyle.Packed)
         createHorizontalChain(fourRef, fiveRef, sixRef, chainStyle = ChainStyle.Packed)
@@ -125,6 +128,16 @@ internal fun PinEntryScreen(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             })
+
+        if (vm.viewState.value.timer.isNotEmpty()) {
+            Text(text = vm.viewState.value.timer,
+                color = theme.pinIndicatorTheme.filledColor,
+                fontSize = 24.sp,
+                modifier = Modifier.constrainAs(timerRef) {
+                    top.linkTo(pinRef.bottom, 8.dp)
+                    start.linkTo(parent.start)
+                })
+        }
 
         Row(modifier = Modifier
             .constrainAs(pinNumbersRef) {
@@ -249,7 +262,7 @@ internal fun PinEntryScreen(
 }
 
 
-suspend fun shakeAnimation(animOffset: Animatable<Float, AnimationVector1D>): Unit {
+suspend fun shakeAnimation(animOffset: Animatable<Float, AnimationVector1D>) {
     animOffset.animateTo(
         targetValue = 0f, animationSpec = repeatable(iterations = 2, animation = keyframes {
             durationMillis = 200 // Total duration of the shake animation

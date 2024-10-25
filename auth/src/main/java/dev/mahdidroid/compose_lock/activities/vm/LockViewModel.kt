@@ -1,10 +1,18 @@
-package dev.mahdidroid.compose_lock.utils
+package dev.mahdidroid.compose_lock.activities.vm
 
 import androidx.lifecycle.viewModelScope
 import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferences
+import dev.mahdidroid.compose_lock.auth.ComposeLockRetryPolicy
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.theme.darkThemePinEntryData
 import dev.mahdidroid.compose_lock.theme.lightThemePinEntryData
+import dev.mahdidroid.compose_lock.utils.AuthResult
+import dev.mahdidroid.compose_lock.utils.AuthState
+import dev.mahdidroid.compose_lock.utils.LockMessages
+import dev.mahdidroid.compose_lock.utils.MVIBaseViewModel
+import dev.mahdidroid.compose_lock.utils.UiAction
+import dev.mahdidroid.compose_lock.utils.UiIntent
+import dev.mahdidroid.compose_lock.utils.UiViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -23,6 +31,9 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                 )
             )
             onStateUpdated()
+        }
+        viewModelScope.launch {
+          //  dataStore.updateUnlockDuration(0L)
         }
     }
 
@@ -48,7 +59,6 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                         currentAuthState = AuthState.NoAuth
                     )
                 )
-                sendAction(LockAction.SendActivityResult(intent.resultCode))
             }
 
             is LockIntent.OnUpdateScreenState -> publishViewState(
@@ -71,38 +81,48 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                 }
                 publishViewState(viewState.value.copy(defaultAuthState = intent.value))
             }
+
+            is LockIntent.OnRetryPolicyChange -> {
+                viewModelScope.launch {
+                    publishViewState(viewState.value.copy())
+                }
+            }
+
+            is LockIntent.OnReceiveAuthResult -> {
+                when (intent.authResult) {
+                    AuthResult.FINGERPRINT_SUCCESS -> sendIntent(LockIntent.NavigateToMainScreen)
+
+                    AuthResult.FINGERPRINT_FAILED -> {}
+                    AuthResult.FINGERPRINT_ERROR -> {}
+                    AuthResult.PIN_SUCCESS -> sendIntent(LockIntent.NavigateToMainScreen)
+
+                    AuthResult.PIN_FAILED -> sendIntent(LockIntent.OnFailed)
+
+                    AuthResult.PASSWORD_SUCCESS -> sendIntent(LockIntent.NavigateToMainScreen)
+
+                    AuthResult.PASSWORD_FAILED -> sendIntent(LockIntent.OnFailed)
+                    AuthResult.Error -> {}
+                }
+            }
+
+            LockIntent.NavigateToMainScreen -> publishViewState(
+                viewState.value.copy(
+                    currentAuthState = AuthState.NoAuth
+                )
+            )
+
+            LockIntent.OnFailed -> {
+
+                val newFailedCount = viewState.value.failedCount + 1
+                publishViewState(viewState.value.copy(failedCount = newFailedCount))
+
+                viewState.value.retryPolicy.retryPolicies[newFailedCount]?.let { delayTime ->
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val a = System.currentTimeMillis() + delayTime
+                        dataStore.updateUnlockDuration(a)
+                    }
+                }
+            }
         }
     }
-}
-
-internal data class LockViewState(
-    val isSingleTheme: Boolean = false,
-    val lightTheme: LockTheme = LockTheme(pinTheme = lightThemePinEntryData),
-    val darkTheme: LockTheme = LockTheme(
-        pinTheme = darkThemePinEntryData
-    ),
-    val messages: LockMessages = LockMessages(),
-    val currentAuthState: AuthState = AuthState.NoAuth,
-    val defaultAuthState: AuthState = AuthState.NoAuth
-) : UiViewState
-
-internal sealed class LockIntent : UiIntent {
-    data class OnDayNightTheme(
-        val lightTheme: LockTheme, val darkTheme: LockTheme
-    ) : LockIntent()
-
-    data class OnSingleTheme(
-        val theme: LockTheme
-    ) : LockIntent()
-
-    data class OnLockMessagesChange(val messages: LockMessages) : LockIntent()
-
-    data class OnNavigateToMainScreen(val resultCode: Int) : LockIntent()
-    data class OnUpdateScreenState(val value: AuthState) : LockIntent()
-    data object OnStop : LockIntent()
-    data class OnSetDefaultAuth(val value: AuthState) : LockIntent()
-}
-
-internal sealed class LockAction : UiAction {
-    data class SendActivityResult(val code: Int) : LockAction()
 }

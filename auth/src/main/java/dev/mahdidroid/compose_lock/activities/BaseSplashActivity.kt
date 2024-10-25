@@ -6,12 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import dev.mahdidroid.compose_lock.activities.vm.LockIntent
+import dev.mahdidroid.compose_lock.activities.vm.LockViewModel
+import dev.mahdidroid.compose_lock.auth.ComposeLockRetryPolicy
 import dev.mahdidroid.compose_lock.theme.ComposeLockTheme
-import dev.mahdidroid.compose_lock.utils.ActivityResultCodes
 import dev.mahdidroid.compose_lock.utils.AuthState
-import dev.mahdidroid.compose_lock.utils.LockIntent
 import dev.mahdidroid.compose_lock.utils.LockMessages
-import dev.mahdidroid.compose_lock.utils.LockViewModel
 import org.koin.android.ext.android.inject
 
 abstract class BaseSplashActivity : ComponentActivity() {
@@ -27,11 +27,9 @@ abstract class BaseSplashActivity : ComponentActivity() {
 
         authActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == ActivityResultCodes.RESULT_FINGERPRINT_SUCCESS || result.resultCode == ActivityResultCodes.RESULT_PIN_SUCCESS || result.resultCode == ActivityResultCodes.RESULT_PASSWORD_SUCCESS) {
-                startActivity(Intent(this, getContentActivityClass()))
-                finish()
-            }
+        ) {
+            startActivity(Intent(this, getContentActivityClass()))
+            finish()
         }
 
         splashScreen.setKeepOnScreenCondition { true }
@@ -68,7 +66,12 @@ abstract class BaseSplashActivity : ComponentActivity() {
         vm.sendIntent(LockIntent.OnLockMessagesChange(lockMessages))
     }
 
+    private fun setRetryPolicy(retryPolicy: ComposeLockRetryPolicy) {
+        vm.sendIntent(LockIntent.OnRetryPolicyChange(retryPolicy))
+    }
+
     abstract fun getComposeLockTheme(): ComposeLockTheme
     abstract fun getLockMessages(): LockMessages
+    abstract fun getRetryPolicy(): ComposeLockRetryPolicy
     abstract fun getContentActivityClass(): Class<*>
 }

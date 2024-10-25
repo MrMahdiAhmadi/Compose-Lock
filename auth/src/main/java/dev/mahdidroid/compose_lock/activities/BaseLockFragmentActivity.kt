@@ -5,11 +5,11 @@ import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.fragment.app.FragmentActivity
+import dev.mahdidroid.compose_lock.activities.vm.LockIntent
+import dev.mahdidroid.compose_lock.activities.vm.LockViewModel
 import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.LocalAuthAction
 import dev.mahdidroid.compose_lock.utils.LockActions
-import dev.mahdidroid.compose_lock.utils.LockIntent
-import dev.mahdidroid.compose_lock.utils.LockViewModel
 import org.koin.android.ext.android.inject
 
 abstract class BaseLockFragmentActivity : FragmentActivity() {

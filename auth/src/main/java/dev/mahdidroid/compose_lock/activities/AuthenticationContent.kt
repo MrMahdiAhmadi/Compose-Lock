@@ -6,6 +6,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.ui.pin.PinEntryScreen
 import dev.mahdidroid.compose_lock.ui.set_pin.SetPinNavigation
+import dev.mahdidroid.compose_lock.utils.AuthResult
 import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.ChangePinTitleMessages
 
@@ -17,6 +18,7 @@ internal fun AuthenticationContent(
     pinTitleMessage: String,
     changePinTitleMessages: ChangePinTitleMessages,
     onBiometricPrompt: () -> Unit,
+    onSendResult: (AuthResult) -> Unit,
     onFinishActivity: () -> Unit
 ) {
     val navController = rememberNavController()
@@ -31,7 +33,7 @@ internal fun AuthenticationContent(
             onNavigateToChangePassword = {
 
             },
-            onNavigateToMainScreen = onFinishActivity
+            onSendResult = onSendResult
         )
 
         AuthState.ChangePin -> {
@@ -40,7 +42,7 @@ internal fun AuthenticationContent(
                 navController = navController,
                 changePinTitleMessages = changePinTitleMessages,
                 theme = theme.pinTheme,
-                onFinishActivity = onFinishActivity
+                onFinishActivity = { onSendResult(AuthResult.PIN_SUCCESS) }
             )
         }
 

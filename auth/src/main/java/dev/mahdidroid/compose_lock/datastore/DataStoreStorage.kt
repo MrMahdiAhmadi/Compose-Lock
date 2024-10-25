@@ -10,6 +10,7 @@ private object DataStoreKeys {
     const val PIN_LENGTH = "pin_length"
     const val PASSWORD = "password"
     const val AUTH_STATE = "auth_state"
+    const val UNLOCK_DURATION = "unlock_duration"
 }
 
 internal interface ComposeLockPreferences {
@@ -21,6 +22,8 @@ internal interface ComposeLockPreferences {
     suspend fun getPassword(): Flow<String>
     suspend fun updateAuthState(value: Int)
     suspend fun getAuthState(): AuthState
+    suspend fun updateUnlockDuration(value: Long)
+    suspend fun getUnlockDuration(): Flow<Long>
 }
 
 
@@ -59,5 +62,11 @@ internal class ComposeLockPreferencesImpl(
             R.string.AuthStateNoAuth -> AuthState.NoAuth
             else -> AuthState.Pin
         }
+
+    override suspend fun updateUnlockDuration(value: Long) =
+        secureDataStore.saveLong(DataStoreKeys.UNLOCK_DURATION, value)
+
+    override suspend fun getUnlockDuration(): Flow<Long> =
+        secureDataStore.longFlow(DataStoreKeys.UNLOCK_DURATION)
 
 }

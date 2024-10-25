@@ -100,6 +100,26 @@ internal class SecureDataStore(
         }
     }
 
+    suspend fun saveLong(key: String, value: Long) {
+        val encryptedValue = encrypt(value.toString())
+        val encodedValue = Base64.encodeToString(encryptedValue, Base64.DEFAULT)
+        context.dataStore.edit {
+            it[stringPreferencesKey(key)] = encodedValue
+        }
+    }
+
+    fun longFlow(key: String): Flow<Long> {
+        return context.dataStore.data.map {
+            val encodedValue = it[stringPreferencesKey(key)] ?: ""
+            if (encodedValue.isNotEmpty()) {
+                val encryptedValue = Base64.decode(encodedValue, Base64.DEFAULT)
+                decrypt(encryptedValue).toLong()
+            } else {
+                0
+            }
+        }
+    }
+
     suspend fun saveBoolean(key: String, value: Boolean) {
         context.dataStore.edit {
             it[booleanPreferencesKey(key)] = value

@@ -37,15 +37,13 @@ fun SetPinNavigation(
     ) {
         composable<SetPinScreens.EnterCurrentPin>(enterTransition = { enterTransition() },
             exitTransition = { exitTransition() }) {
-            PinEntryScreen(
-                modifier = modifier,
+            PinEntryScreen(modifier = modifier,
                 theme = theme,
                 title = changePinTitleMessages.enterCurrentPinTitle,
                 isChangePassword = true,
                 onFingerPrintClick = {},
                 onNavigateToChangePassword = { navController.navigate(SetPinScreens.NewPin) },
-                onNavigateToMainScreen = onFinishActivity
-            )
+                onSendResult = { onFinishActivity() })
         }
         composable<SetPinScreens.NewPin>(enterTransition = { enterTransition() },
             exitTransition = { exitTransition() }) {
