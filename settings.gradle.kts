@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Compose Lock"
 include(":app")
-include(":auth")
+include(":composeLock")
