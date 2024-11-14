@@ -29,13 +29,13 @@ internal class PinViewModel(
                 }
             }
         }
-        viewModelScope.launch {
+       /* viewModelScope.launch {
             dataStore.getUnlockDuration().collect {
                 if (it != 0L) {
                     sendIntent(PinIntent.OnStartTimer(it))
                 }
             }
-        }
+        }*/
     }
 
     override fun onIntent(intent: PinIntent) {

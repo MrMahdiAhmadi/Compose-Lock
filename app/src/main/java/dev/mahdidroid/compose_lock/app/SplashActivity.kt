@@ -11,9 +11,9 @@ import dev.mahdidroid.compose_lock.auth.ComposeLockRetryPolicy
 import dev.mahdidroid.compose_lock.theme.ComposeLockTheme
 import dev.mahdidroid.compose_lock.theme.LockTheme
 import dev.mahdidroid.compose_lock.ui.pin.PinEntryData
-import dev.mahdidroid.compose_lock.ui.pin.composable.IconButtonTheme
-import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButtonTheme
-import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicatorTheme
+import dev.mahdidroid.compose_lock.ui.composable.IconButtonTheme
+import dev.mahdidroid.compose_lock.ui.composable.NumberButtonTheme
+import dev.mahdidroid.compose_lock.ui.composable.PinIndicatorTheme
 import dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin.NewPinConfirm
 import dev.mahdidroid.compose_lock.utils.BiometricMessages
 import dev.mahdidroid.compose_lock.utils.LockMessages

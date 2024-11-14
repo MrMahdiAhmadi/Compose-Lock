@@ -9,15 +9,15 @@ import dev.mahdidroid.compose_lock.ui.set_pin.SetPinNavigation
 import dev.mahdidroid.compose_lock.utils.AuthResult
 import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.ChangePinTitleMessages
+import dev.mahdidroid.compose_lock.utils.LockMessages
 
 @Composable
 internal fun AuthenticationContent(
     modifier: Modifier = Modifier,
     state: AuthState,
     theme: LockTheme,
-    pinTitleMessage: String,
+    messages: LockMessages,
     isFingerprintsEnabled: Boolean,
-    changePinTitleMessages: ChangePinTitleMessages,
     onBiometricPrompt: () -> Unit,
     onSendResult: (AuthResult) -> Unit,
     onNavigateToChangePin: () -> Unit,
@@ -27,7 +27,7 @@ internal fun AuthenticationContent(
     when (state) {
         AuthState.Pin -> PinEntryScreen(
             modifier = modifier,
-            title = pinTitleMessage,
+            title = messages.pinTitleMessage,
             theme = theme.pinTheme,
             isFingerPrintAvailable = isFingerprintsEnabled,
             onFingerPrintClick = {
@@ -40,7 +40,7 @@ internal fun AuthenticationContent(
         AuthState.ChangePin -> {
             SetPinNavigation(modifier = modifier,
                 navController = navController,
-                changePinTitleMessages = changePinTitleMessages,
+                changePinTitleMessages = messages.changePinTitleMessages,
                 theme = theme.pinTheme,
                 onFinishActivity = { onSetNewPin() })
         }

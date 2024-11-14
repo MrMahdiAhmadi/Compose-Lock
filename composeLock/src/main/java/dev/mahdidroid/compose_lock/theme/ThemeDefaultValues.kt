@@ -4,9 +4,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.mahdidroid.compose_lock.ui.pin.PinEntryData
-import dev.mahdidroid.compose_lock.ui.pin.composable.IconButtonTheme
-import dev.mahdidroid.compose_lock.ui.pin.composable.NumberButtonTheme
-import dev.mahdidroid.compose_lock.ui.pin.composable.PinIndicatorTheme
+import dev.mahdidroid.compose_lock.ui.composable.IconButtonTheme
+import dev.mahdidroid.compose_lock.ui.composable.NumberButtonTheme
+import dev.mahdidroid.compose_lock.ui.composable.PinIndicatorTheme
 import dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin.NewPinConfirm
 
 internal val lightThemePinEntryData = PinEntryData(

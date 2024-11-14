@@ -1,4 +1,4 @@
-package dev.mahdidroid.compose_lock.ui.pin.composable
+package dev.mahdidroid.compose_lock.ui.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

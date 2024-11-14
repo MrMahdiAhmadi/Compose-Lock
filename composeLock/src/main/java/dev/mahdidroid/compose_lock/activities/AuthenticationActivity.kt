@@ -53,8 +53,7 @@ internal class AuthenticationActivity : FragmentActivity() {
             AuthenticationContent(modifier = Modifier.fillMaxSize(),
                 state = vm.viewState.value.currentAuthState,
                 theme = currentTheme,
-                pinTitleMessage = vm.viewState.value.messages.pinTitleMessage,
-                changePinTitleMessages = vm.viewState.value.messages.changePinTitleMessages,
+                messages = vm.viewState.value.messages,
                 isFingerprintsEnabled = vm.isAcceptFingerprint(),
                 onBiometricPrompt = {
                     displayBiometricPrompt()

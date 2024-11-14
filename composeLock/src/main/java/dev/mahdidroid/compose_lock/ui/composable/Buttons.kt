@@ -1,4 +1,4 @@
-package dev.mahdidroid.compose_lock.ui.pin.composable
+package dev.mahdidroid.compose_lock.ui.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -28,10 +28,13 @@ data class NumberButtonTheme(
 
 @Composable
 internal fun NumberButton(
-    modifier: Modifier = Modifier, number: String, theme: NumberButtonTheme, onClick: () -> Unit
+    modifier: Modifier = Modifier,
+    number: String,
+    theme: NumberButtonTheme,
+    onClick: (String) -> Unit
 ) {
     Button(
-        onClick = onClick,
+        onClick = { onClick(number) },
         modifier = modifier
             .padding(horizontal = 16.dp)
             .size(54.dp),
@@ -56,7 +59,7 @@ data class IconButtonTheme(
 @Composable
 internal fun IconButton(
     modifier: Modifier = Modifier,
-    icon:Int,
+    icon: Int,
     theme: IconButtonTheme,
     onLongClick: () -> Unit,
     onClick: () -> Unit
