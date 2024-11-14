@@ -9,8 +9,3 @@ sealed class AuthState(val name: Int) {
     data object ChangePassword : AuthState(R.string.AuthStateChangePassword)
     data object NoAuth : AuthState(R.string.AuthStateNoAuth)
 }
-
-sealed class LockActions {
-    data class OnOpenScreenNow(val value: AuthState) : LockActions()
-    data class OnSetDefaultValue(val value: AuthState) : LockActions()
-}

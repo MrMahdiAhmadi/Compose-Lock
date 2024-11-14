@@ -2,6 +2,7 @@ package dev.mahdidroid.compose_lock.ui.pin
 
 import androidx.lifecycle.viewModelScope
 import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferences
+import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.MVIBaseViewModel
 import dev.mahdidroid.compose_lock.utils.UiAction
 import dev.mahdidroid.compose_lock.utils.UiIntent
@@ -16,16 +17,16 @@ internal class PinViewModel(
 ) : MVIBaseViewModel<PinViewState, PinIntent, PinAction>() {
 
     override val initialState: PinViewState
-        get() = PinViewState(isChangePassword = isChangePassword)
+        get() = PinViewState()
 
     init {
         viewModelScope.launch {
             dataStore.getPinLength().collect {
-                publishViewState(viewState.value.copy(maxLength = 4))/*if (it == 0) {
-                    if (!isChangePassword) sendAction(PinAction.NavigateToChangePassword) else sendAction(
-                        PinAction.NavigateToChangePassword
-                    )
-                }*/
+                if (it == 0) {
+                    sendAction(PinAction.NavigateToChangePin)
+                } else {
+                    publishViewState(viewState.value.copy(maxLength = it))
+                }
             }
         }
         viewModelScope.launch {
@@ -82,13 +83,17 @@ internal class PinViewModel(
 
     private fun checkPin() {
         viewModelScope.launch {
-            val currentPin = dataStore.getPin().first()
-            if ("1111" == viewState.value.pin) {
-                if (viewState.value.isChangePassword) {
-                    sendAction(PinAction.NavigateToChangePassword)
-                    publishViewState(viewState.value.copy(pin = "", acceptPin = true))
-                } else sendAction(PinAction.NavigateToMainScreen)
-            } else sendAction(PinAction.ShowErrorPin)
+            if (isChangePassword) {
+                sendAction(PinAction.NavigateToChangePin)
+                publishViewState(viewState.value.copy(pin = "", acceptPin = true))
+            } else {
+                val currentPin = dataStore.getPin().first()
+                if (currentPin == viewState.value.pin) {
+                    sendAction(PinAction.NavigateToMainScreen)
+                } else {
+                    sendAction(PinAction.ShowErrorPin)
+                }
+            }
         }
     }
 }
@@ -97,7 +102,6 @@ data class PinViewState(
     val pin: String = "",
     val maxLength: Int = 4,
     val acceptPin: Boolean = true,
-    val isChangePassword: Boolean,
     val timer: String = ""
 ) : UiViewState
 
@@ -110,6 +114,6 @@ sealed class PinIntent : UiIntent {
 
 sealed class PinAction : UiAction {
     data object ShowErrorPin : PinAction()
-    data object NavigateToChangePassword : PinAction()
+    data object NavigateToChangePin : PinAction()
     data object NavigateToMainScreen : PinAction()
 }

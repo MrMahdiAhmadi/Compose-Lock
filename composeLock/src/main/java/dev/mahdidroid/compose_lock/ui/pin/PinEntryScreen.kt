@@ -55,7 +55,7 @@ internal fun PinEntryScreen(
     theme: PinEntryData,
     vm: PinViewModel = koinViewModel(parameters = { parametersOf(isChangePassword) }),
     onFingerPrintClick: () -> Unit,
-    onNavigateToChangePassword: () -> Unit,
+    onNavigateToChangePin: () -> Unit,
     onSendResult: (AuthResult) -> Unit
 ) {
     val animOffset = remember { Animatable(0f) }
@@ -104,7 +104,7 @@ internal fun PinEntryScreen(
                     onSendResult(AuthResult.PIN_FAILED)
                 }
 
-                PinAction.NavigateToChangePassword -> onNavigateToChangePassword()
+                PinAction.NavigateToChangePin -> onNavigateToChangePin()
 
                 PinAction.NavigateToMainScreen -> onSendResult(AuthResult.PIN_SUCCESS)
             }

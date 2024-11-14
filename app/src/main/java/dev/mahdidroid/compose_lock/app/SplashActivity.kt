@@ -1,9 +1,12 @@
 package dev.mahdidroid.compose_lock.app
 
+import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.mahdidroid.compose_lock.activities.BaseSplashActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import dev.mahdidroid.compose_lock.activities.LockSplashInit
 import dev.mahdidroid.compose_lock.auth.ComposeLockRetryPolicy
 import dev.mahdidroid.compose_lock.theme.ComposeLockTheme
 import dev.mahdidroid.compose_lock.theme.LockTheme
@@ -15,9 +18,29 @@ import dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin.NewPinConfirm
 import dev.mahdidroid.compose_lock.utils.BiometricMessages
 import dev.mahdidroid.compose_lock.utils.LockMessages
 
-class SplashActivity : BaseSplashActivity() {
+class SplashActivity : ComponentActivity() {
 
-    override fun getComposeLockTheme(): ComposeLockTheme = ComposeLockTheme.SingleTheme(
+    private val splashInit by lazy {
+        LockSplashInit(context = this,
+            activityResultRegistry = this.activityResultRegistry,
+            getContentActivityClass = { getContentActivityClass() },
+            getComposeLockTheme = { getComposeLockTheme() },
+            getLockMessages = { getLockMessages() },
+            getRetryPolicy = { getRetryPolicy() })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        super.onCreate(savedInstanceState)
+
+        splashInit.initialize()
+
+        splashScreen.setKeepOnScreenCondition { true }
+
+
+    }
+
+    private fun getComposeLockTheme(): ComposeLockTheme = ComposeLockTheme.SingleTheme(
         LockTheme(
             PinEntryData(
                 backgroundColor = Color(0xFF212121),
@@ -45,12 +68,11 @@ class SplashActivity : BaseSplashActivity() {
         )
     )
 
-    override fun getLockMessages(): LockMessages = LockMessages(
-        pinTitleMessage = "test new message",
+    private fun getLockMessages(): LockMessages = LockMessages(
         biometricMessages = BiometricMessages(title = "skvjsklvjlksdafjvldksfjvdf")
     )
 
-    override fun getRetryPolicy(): ComposeLockRetryPolicy = ComposeLockRetryPolicy()
+    private fun getRetryPolicy(): ComposeLockRetryPolicy = ComposeLockRetryPolicy()
 
-    override fun getContentActivityClass(): Class<*> = MainComponentActivity::class.java
+    private fun getContentActivityClass(): Class<*> = MainComponentActivity::class.java
 }

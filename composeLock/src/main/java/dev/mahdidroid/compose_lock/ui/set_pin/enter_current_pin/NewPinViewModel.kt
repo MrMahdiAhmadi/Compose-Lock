@@ -2,6 +2,7 @@ package dev.mahdidroid.compose_lock.ui.set_pin.enter_current_pin
 
 import androidx.lifecycle.viewModelScope
 import dev.mahdidroid.compose_lock.datastore.ComposeLockPreferences
+import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.MVIBaseViewModel
 import dev.mahdidroid.compose_lock.utils.UiAction
 import dev.mahdidroid.compose_lock.utils.UiIntent
@@ -90,6 +91,7 @@ internal class NewPinViewModel(
             if (newPin == viewState.value.pin) {
                 dataStore.updatePin(viewState.value.pin)
                 dataStore.updatePinLength(viewState.value.pin.length)
+                dataStore.updateAuthState(AuthState.Pin.name)
                 publishViewState(viewState.value.copy(pin = ""))
                 sendAction(SetPinAction.NavigateToMainScreen)
             } else {

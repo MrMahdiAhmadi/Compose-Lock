@@ -22,6 +22,21 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
     override val initialState: LockViewState
         get() = LockViewState()
 
+    init {
+        viewModelScope.launch {
+            dataStore.getUnlockDuration().collect {
+                if (it != 0L) {
+                    publishViewState(viewState.value.copy(lockDuration = it))
+                }
+            }
+        }
+        viewModelScope.launch {
+            dataStore.getFingerprintStatus().collect {
+                publishViewState(viewState.value.copy(isFingerprintsEnabled = it))
+            }
+        }
+    }
+
     fun loadAuthState(onStateUpdated: () -> Unit) {
         viewModelScope.launch {
             val state = dataStore.getAuthState()
@@ -31,9 +46,6 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                 )
             )
             onStateUpdated()
-        }
-        viewModelScope.launch {
-          //  dataStore.updateUnlockDuration(0L)
         }
     }
 
@@ -53,27 +65,11 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
 
             is LockIntent.OnLockMessagesChange -> publishViewState(viewState.value.copy(messages = intent.messages))
 
-            is LockIntent.OnNavigateToMainScreen -> {
-                publishViewState(
-                    viewState.value.copy(
-                        currentAuthState = AuthState.NoAuth
-                    )
-                )
-            }
-
             is LockIntent.OnUpdateScreenState -> publishViewState(
                 viewState.value.copy(
                     currentAuthState = intent.value
                 )
             )
-
-            LockIntent.OnStop -> {
-                if (viewState.value.defaultAuthState != AuthState.NoAuth) publishViewState(
-                    viewState.value.copy(
-                        currentAuthState = viewState.value.defaultAuthState
-                    )
-                )
-            }
 
             is LockIntent.OnSetDefaultAuth -> {
                 viewModelScope.launch(Dispatchers.Main) {
@@ -105,11 +101,10 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                 }
             }
 
-            LockIntent.NavigateToMainScreen -> publishViewState(
-                viewState.value.copy(
-                    currentAuthState = AuthState.NoAuth
-                )
-            )
+            LockIntent.NavigateToMainScreen -> {
+                publishViewState(viewState.value.copy(showPinOnResume = false))
+                sendAction(LockAction.FinishAuthActivity)
+            }
 
             LockIntent.OnFailed -> {
 
@@ -123,6 +118,21 @@ internal class LockViewModel(private val dataStore: ComposeLockPreferences) :
                     }
                 }
             }
+
+            LockIntent.OnShowPinOnResume -> publishViewState(viewState.value.copy(showPinOnResume = true))
+
+            is LockIntent.OnFingerprintStateChange -> viewModelScope.launch {
+                dataStore.updateFingerprintStatus(
+                    intent.value
+                )
+            }
         }
     }
+
+    fun isAcceptFingerprint(): Boolean =
+        viewState.value.isFingerprintsEnabled && (viewState.value.currentAuthState == AuthState.Pin || viewState.value.currentAuthState == AuthState.Password)
+
+    fun isShowLockOnResume(): Boolean =
+        viewState.value.defaultAuthState != AuthState.NoAuth && viewState.value.showPinOnResume
+
 }

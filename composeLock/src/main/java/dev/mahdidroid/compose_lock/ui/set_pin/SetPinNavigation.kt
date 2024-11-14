@@ -41,8 +41,9 @@ fun SetPinNavigation(
                 theme = theme,
                 title = changePinTitleMessages.enterCurrentPinTitle,
                 isChangePassword = true,
+                isFingerPrintAvailable = false,
                 onFingerPrintClick = {},
-                onNavigateToChangePassword = { navController.navigate(SetPinScreens.NewPin) },
+                onNavigateToChangePin = { navController.navigate(SetPinScreens.NewPin) },
                 onSendResult = { onFinishActivity() })
         }
         composable<SetPinScreens.NewPin>(enterTransition = { enterTransition() },

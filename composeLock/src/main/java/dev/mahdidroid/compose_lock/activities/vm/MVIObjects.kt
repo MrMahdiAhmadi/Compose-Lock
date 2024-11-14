@@ -23,7 +23,8 @@ internal data class LockViewState(
     val defaultAuthState: AuthState = AuthState.NoAuth,
     val failedCount: Int = 0,
     val lockDuration: Long = 0,
-    val lockTitle: String = ""
+    val showPinOnResume: Boolean = true,
+    val isFingerprintsEnabled: Boolean = true
 ) : UiViewState
 
 internal sealed class LockIntent : UiIntent {
@@ -52,22 +53,10 @@ internal sealed class LockIntent : UiIntent {
     data class OnLockMessagesChange(val messages: LockMessages) : LockIntent()
 
     /**
-     * Represents an intent to navigate to the main screen after a successful authentication.
-     * - `resultCode`: A code indicating the result of the authentication process.
-     */
-    data class OnNavigateToMainScreen(val resultCode: Int) : LockIntent()
-
-    /**
      * Represents an intent to update the screen's current authentication state.
      * - `value`: The new authentication state to be applied (e.g., PIN, password, no authentication).
      */
     data class OnUpdateScreenState(val value: AuthState) : LockIntent()
-
-    /**
-     * Represents an intent to handle actions that should be taken when the activity is stopped.
-     * It resets the current authentication state based on the default state.
-     */
-    data object OnStop : LockIntent()
 
     /**
      * Represents an intent to set a new default authentication method.
@@ -99,6 +88,12 @@ internal sealed class LockIntent : UiIntent {
      * It increments the failed attempt count and possibly triggers delay mechanisms based on retry policies.
      */
     data object OnFailed : LockIntent()
+
+    data object OnShowPinOnResume : LockIntent()
+
+    data class OnFingerprintStateChange(val value: Boolean) : LockIntent()
 }
 
-internal sealed class LockAction : UiAction
+internal sealed class LockAction : UiAction {
+    data object FinishAuthActivity : LockAction()
+}

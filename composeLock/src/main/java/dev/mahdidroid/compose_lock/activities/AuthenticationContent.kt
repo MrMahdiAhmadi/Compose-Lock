@@ -16,10 +16,12 @@ internal fun AuthenticationContent(
     state: AuthState,
     theme: LockTheme,
     pinTitleMessage: String,
+    isFingerprintsEnabled: Boolean,
     changePinTitleMessages: ChangePinTitleMessages,
     onBiometricPrompt: () -> Unit,
     onSendResult: (AuthResult) -> Unit,
-    onFinishActivity: () -> Unit
+    onNavigateToChangePin: () -> Unit,
+    onSetNewPin: () -> Unit
 ) {
     val navController = rememberNavController()
     when (state) {
@@ -27,27 +29,24 @@ internal fun AuthenticationContent(
             modifier = modifier,
             title = pinTitleMessage,
             theme = theme.pinTheme,
+            isFingerPrintAvailable = isFingerprintsEnabled,
             onFingerPrintClick = {
                 onBiometricPrompt()
             },
-            onNavigateToChangePassword = {
-
-            },
+            onNavigateToChangePin = onNavigateToChangePin,
             onSendResult = onSendResult
         )
 
         AuthState.ChangePin -> {
-            SetPinNavigation(
-                modifier = modifier,
+            SetPinNavigation(modifier = modifier,
                 navController = navController,
                 changePinTitleMessages = changePinTitleMessages,
                 theme = theme.pinTheme,
-                onFinishActivity = { onSendResult(AuthResult.PIN_SUCCESS) }
-            )
+                onFinishActivity = { onSetNewPin() })
         }
 
         AuthState.Password -> {}
         AuthState.ChangePassword -> {}
-        AuthState.NoAuth -> onFinishActivity()
+        AuthState.NoAuth -> {}
     }
 }

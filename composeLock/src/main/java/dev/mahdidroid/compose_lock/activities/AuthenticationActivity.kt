@@ -5,12 +5,15 @@ import androidx.activity.compose.setContent
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import dev.mahdidroid.compose_lock.activities.vm.LockAction
 import dev.mahdidroid.compose_lock.activities.vm.LockIntent
 import dev.mahdidroid.compose_lock.activities.vm.LockViewModel
 import dev.mahdidroid.compose_lock.utils.AuthResult
+import dev.mahdidroid.compose_lock.utils.AuthState
 import dev.mahdidroid.compose_lock.utils.BiometricMessages
 import org.koin.android.ext.android.inject
 import java.util.concurrent.Executor
@@ -32,8 +35,17 @@ internal class AuthenticationActivity : FragmentActivity() {
             vm.sendIntent(LockIntent.OnReceiveAuthResult(AuthResult.FINGERPRINT_ERROR))
         })
         promptInfo = buildPromptInfo(vm.viewState.value.messages.biometricMessages)
-
+        if (vm.isAcceptFingerprint()) displayBiometricPrompt()
         setContent {
+
+            LaunchedEffect(Unit) {
+                vm.actions.collect { action ->
+                    when (action) {
+                        LockAction.FinishAuthActivity -> finish()
+                    }
+                }
+            }
+
             val currentTheme =
                 if (vm.viewState.value.isSingleTheme) vm.viewState.value.lightTheme else {
                     if (isSystemInDarkTheme()) vm.viewState.value.darkTheme else vm.viewState.value.lightTheme
@@ -43,12 +55,21 @@ internal class AuthenticationActivity : FragmentActivity() {
                 theme = currentTheme,
                 pinTitleMessage = vm.viewState.value.messages.pinTitleMessage,
                 changePinTitleMessages = vm.viewState.value.messages.changePinTitleMessages,
+                isFingerprintsEnabled = vm.isAcceptFingerprint(),
                 onBiometricPrompt = {
                     displayBiometricPrompt()
                 },
                 onSendResult = {
                     vm.sendIntent(LockIntent.OnReceiveAuthResult(it))
-                }, onFinishActivity = { finish() })
+                },
+                onNavigateToChangePin = {
+                    vm.sendIntent(LockIntent.OnUpdateScreenState(AuthState.ChangePin))
+                },
+                onSetNewPin = {
+                    vm.loadAuthState {
+                        vm.sendIntent(LockIntent.NavigateToMainScreen)
+                    }
+                })
         }
     }
 
@@ -57,9 +78,7 @@ internal class AuthenticationActivity : FragmentActivity() {
     }
 
     private fun setupBiometricPrompt(
-        onSuccess: () -> Unit,
-        onError: () -> Unit,
-        onFailed: () -> Unit
+        onSuccess: () -> Unit, onError: () -> Unit, onFailed: () -> Unit
     ): BiometricPrompt {
         val executor: Executor = ContextCompat.getMainExecutor(this)
 

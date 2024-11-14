@@ -21,3 +21,23 @@ import androidx.compose.runtime.compositionLocalOf
  val LocalAuthAction = compositionLocalOf<(LockActions) -> Unit> {
     error("No AuthAction function provided")
 }
+
+sealed class LockActions {
+    data class OnOpenScreenNow(val value: AuthState) : LockActions()
+    data class OnSetDefaultValue(val value: AuthState) : LockActions()
+    data object OnEnableFingerprints : LockActions()
+    data object OnDisableFingerprints : LockActions()
+}
+
+
+val LocalAuthData = compositionLocalOf<AuthData> {
+    error("No AuthData function provided")
+}
+
+data class AuthData(
+    val isFingerprintEnabled: Boolean,
+    val defaultAuthState: AuthState
+)
+
+
+

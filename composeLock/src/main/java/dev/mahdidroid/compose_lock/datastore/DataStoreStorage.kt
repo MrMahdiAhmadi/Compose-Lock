@@ -11,6 +11,7 @@ private object DataStoreKeys {
     const val PASSWORD = "password"
     const val AUTH_STATE = "auth_state"
     const val UNLOCK_DURATION = "unlock_duration"
+    const val FINGERPRINT_STATUS = "fingerprint_status"
 }
 
 internal interface ComposeLockPreferences {
@@ -24,6 +25,8 @@ internal interface ComposeLockPreferences {
     suspend fun getAuthState(): AuthState
     suspend fun updateUnlockDuration(value: Long)
     suspend fun getUnlockDuration(): Flow<Long>
+    suspend fun updateFingerprintStatus(value: Boolean)
+    suspend fun getFingerprintStatus(): Flow<Boolean>
 }
 
 
@@ -60,7 +63,7 @@ internal class ComposeLockPreferencesImpl(
             R.string.AuthStateChangePin -> AuthState.ChangePin
             R.string.AuthStateChangePassword -> AuthState.ChangePassword
             R.string.AuthStateNoAuth -> AuthState.NoAuth
-            else -> AuthState.Pin
+            else -> AuthState.ChangePin
         }
 
     override suspend fun updateUnlockDuration(value: Long) =
@@ -68,5 +71,12 @@ internal class ComposeLockPreferencesImpl(
 
     override suspend fun getUnlockDuration(): Flow<Long> =
         secureDataStore.longFlow(DataStoreKeys.UNLOCK_DURATION)
+
+    override suspend fun updateFingerprintStatus(value: Boolean) =
+        secureDataStore.saveBoolean(DataStoreKeys.FINGERPRINT_STATUS, value)
+
+
+    override suspend fun getFingerprintStatus(): Flow<Boolean> =
+        secureDataStore.booleanFlow(DataStoreKeys.FINGERPRINT_STATUS)
 
 }
